@@ -1,1 +1,58 @@
-{"dependencies": {}, "locked": {}}
+{
+  "dependencies": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.29"
+    },
+    "dev.onevr.vrworldtoolkit": {
+      "version": "3.2.0"
+    },
+    "com.mimylab.fukuroudon": {
+      "version": "3.2.0"
+    },
+    "net.kaikoga.pen": {
+      "version": "1.0.2"
+    },
+    "com.mimylab.dynamicdragondrivesystem": {
+      "version": "1.0.0"
+    }
+  },
+  "locked": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.29",
+      "dependencies": {}
+    },
+    "com.vrchat.base": {
+      "version": "3.7.5",
+      "dependencies": {}
+    },
+    "com.vrchat.worlds": {
+      "version": "3.7.5",
+      "dependencies": {
+        "com.vrchat.base": "3.7.5"
+      }
+    },
+    "dev.onevr.vrworldtoolkit": {
+      "version": "3.2.0",
+      "dependencies": {}
+    },
+    "com.mimylab.fukuroudon": {
+      "version": "3.2.0",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.7.4"
+      }
+    },
+    "net.kaikoga.pen": {
+      "version": "1.0.2",
+      "dependencies": {
+        "com.vrchat.base": "^3.0.0",
+        "com.vrchat.worlds": "^3.0.0"
+      }
+    },
+    "com.mimylab.dynamicdragondrivesystem": {
+      "version": "1.0.0",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.7.4"
+      }
+    }
+  }
+}
