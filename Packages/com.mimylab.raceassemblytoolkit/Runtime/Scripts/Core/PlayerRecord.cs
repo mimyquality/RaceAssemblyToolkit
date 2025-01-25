@@ -6,6 +6,7 @@ https://opensource.org/license/mit
 
 namespace MimyLab.RaceAssemblyToolkit
 {
+    using System;
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
@@ -20,22 +21,24 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         internal CourseDescriptor course;
 
-        [UdonSynced]
-        private float _bestRecordTime;
-        [UdonSynced]
-        private string _bestRecordVehicle = "";
+        private TimeSpan _bestRecordTime;
+        private string _bestRecordRunnerName = "";
 
-        [UdonSynced]
-        private float _recordTime;
-        [UdonSynced]
-        private string _recordVehicle = "";
+        private TimeSpan _recordTime;
+        private Runner _recordRunner;
+        private string _recordRunnerName = "";
+
+        private TimeSpan[] _lapTimes = new TimeSpan[0];
 
         private bool _initialized = false;
         private void Initialize()
         {
             if (_initialized) { return; }
 
-
+            if (Networking.IsOwner(this.gameObject))
+            {
+                course.localPlayerRecord = this;
+            }
 
             _initialized = true;
         }
@@ -43,6 +46,21 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             Initialize();
 
+
+        }
+
+        public void AddSplitTime(TimeSpan splitTime)
+        {
+
+        }
+
+        public void AddLapTime(TimeSpan lapTime)
+        {
+
+        }
+
+        public void SetGoalTime(TimeSpan goalTime)
+        {
 
         }
     }

@@ -10,7 +10,6 @@ namespace MimyLab.RaceAssemblyToolkit
     using UnityEngine;
     using VRC.SDKBase;
     using VRC.Udon;
-    using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Course Descriptor")]
@@ -18,9 +17,18 @@ namespace MimyLab.RaceAssemblyToolkit
     public class CourseDescriptor : UdonSharpBehaviour
     {
         [SerializeField]
-        private Checkpoint[] _checkpoints = new Checkpoint[0];
+        private string _courseName = "";
         [SerializeField]
-        private int _lapCount;
+        private Checkpoint[] _checkpoints = new Checkpoint[0];
+        [SerializeField, Min(0)]
+        private int _lapCount = 0;
+        [SerializeField, Min(0.0f)]
+        private float _recordOverCut = 0.0f;
+
+        internal PlayerRecord localPlayerRecord;
+
+        public int LapCount { get => _lapCount; }
+        public Checkpoint[] Checkpoints { get => _checkpoints; }
 
         private bool _initialized = false;
         private void Initialize()
@@ -37,8 +45,19 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
+        }
 
+        public Checkpoint GetNextCheckpoint(Checkpoint currentCheckpoint)
+        {
+            var current = System.Array.IndexOf(_checkpoints, currentCheckpoint);
+            if (current < 0) { return null; }
 
+            if (current >= _checkpoints.Length - 1)
+            {
+                return _checkpoints[0];
+            }
+
+            return _checkpoints[current++];
         }
     }
 }
