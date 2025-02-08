@@ -6,6 +6,7 @@ https://opensource.org/license/mit
 
 namespace MimyLab.RaceAssemblyToolkit
 {
+    using System;
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
@@ -16,50 +17,44 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Runner : UdonSharpBehaviour
     {
+        public string runnerName = "";
+
+        internal RunnerTimeDisplay display;
+
         private CourseDescriptor _entriedCourse = null;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private Checkpoint _nextCheckpoint = null;
         private PlayerRecord _playerRecord = null;
 
         private int _lapCount;
-        private double[] _sectionClocks = new double[0];
+        public double[] _sectionClocks = new double[1];
+        public int _currentSection;
+        public int _currentLap;
 
-        private int _currentLap;
-        private int _currentSection;
+        public CourseDescriptor EntriedCourse { get => _entriedCourse; }
+        public int LapCount { get => _lapCount; }
+        public int CurrentSection { get => _currentSection; }
+        public int CurrentLap { get => _currentLap; }
 
-        private bool _initialized = false;
-        private void Initialize()
+        private void Update()
         {
-            if (_initialized) { return; }
-
-
-
-            _initialized = true;
-        }
-        private void Start()
-        {
-            Initialize();
+            if (display)
+            {
+                display.CurrentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
+            }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public void OnPassCheckpoint(Checkpoint checkpoint, double checkClock)
         {
-            var triggerClock = Time.timeAsDouble;
-
-            if (!Utilities.IsValid(other)) { return; }
-
-            var checkpoint = other.GetComponent<Checkpoint>();
-            if (!checkpoint) { return; }
-
             if (checkpoint == _nextCheckpoint)
             {
-                CountSection(triggerClock);
+                CountSection(checkClock);
 
                 if (checkpoint == _entriedCheckpoints[_entriedCheckpoints.Length - 1])
                 {
                     if (_lapCount == 0)
                     {
-                        CountStop(triggerClock);
-                        ResetCourseEntry();
+                        CountStop(checkClock);
                         return;
                     }
                 }
@@ -69,13 +64,12 @@ namespace MimyLab.RaceAssemblyToolkit
                     CountLap();
                     if (_currentLap >= _lapCount)
                     {
-                        CountStop(triggerClock);
-                        ResetCourseEntry();
+                        CountStop(checkClock);
                         return;
                     }
                 }
 
-                _nextCheckpoint = _entriedCourse.GetNextCheckpoint(checkpoint);
+                _nextCheckpoint = GetNextCheckpoint(checkpoint);
                 return;
             }
 
@@ -87,16 +81,60 @@ namespace MimyLab.RaceAssemblyToolkit
             if (checkpoint == checkpoints[0])
             {
                 EntryCourse(course);
-                CountStart(triggerClock);
+                CountStart(checkClock);
                 return;
             }
         }
 
-        private void ResetCourseEntry()
+        public TimeSpan GetSectionTime(int section)
         {
-            _entriedCourse = null;
-            _playerRecord = null;
-            _nextCheckpoint = null;
+            if (section < 1) { return TimeSpan.Zero; }
+            if (section >= _sectionClocks.Length) { return TimeSpan.Zero; }
+            if (_sectionClocks[section] == 0.0d) { return TimeSpan.Zero; }
+
+            return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[section - 1]);
+        }
+
+        public TimeSpan GetLapTime(int lap)
+        {
+            // ToDo:セクション間隔のままなのでラップ間隔に要修正
+
+            if (lap < 1) { return TimeSpan.Zero; }
+            if (lap > _lapCount) { return TimeSpan.Zero; }
+            if (_sectionClocks[lap] == 0.0d) { return TimeSpan.Zero; }
+
+            return TimeSpan.FromSeconds(_sectionClocks[lap] - _sectionClocks[lap - 1]);
+        }
+
+        public TimeSpan GetSplitTime(int section)
+        {
+            if (section < 1) { return TimeSpan.Zero; }
+            if (section >= _sectionClocks.Length) { return TimeSpan.Zero; }
+            if (_sectionClocks[section] == 0.0d) { return TimeSpan.Zero; }
+
+            return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[0]);
+        }
+
+        public TimeSpan GetCurrentTime()
+        {
+            if (_sectionClocks[0] == 0.0d) { return TimeSpan.Zero; }
+
+            return TimeSpan.FromSeconds(Time.timeAsDouble - _sectionClocks[0]);
+        }
+
+        public TimeSpan GetCurrentLapTime()
+        {
+            return GetLapTime(_currentSection);
+        }
+
+        public TimeSpan GetCurrentSplitTime()
+        {
+            return GetSplitTime(_currentSection);
+        }
+
+        public TimeSpan GetGoalTime()
+        {
+            return GetSplitTime(_sectionClocks.Length - 1);
         }
 
         private void EntryCourse(CourseDescriptor course)
@@ -109,27 +147,67 @@ namespace MimyLab.RaceAssemblyToolkit
             var sectionCount = _lapCount > 0 ? _lapCount * _entriedCheckpoints.Length + 1 : _entriedCheckpoints.Length;
             _sectionClocks = new double[sectionCount];
 
-            _nextCheckpoint = _entriedCourse.GetNextCheckpoint(_entriedCheckpoints[0]);
+            _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
+
+            if (display)
+            {
+                display.RunnerName = runnerName;
+                display.EntriedCourseName = _entriedCourse.courseName;
+                display.LapCount = _lapCount;
+            }
         }
+
+        private Checkpoint GetNextCheckpoint(Checkpoint currentCheckpoint)
+        {
+            var current = Array.IndexOf(_entriedCheckpoints, currentCheckpoint);
+            if (current < 0) { return null; }
+
+            if (current >= _entriedCheckpoints.Length - 1)
+            {
+                return _entriedCheckpoints[0];
+            }
+
+            return _entriedCheckpoints[current + 1];
+        }
+
+        private bool _isCounting;
 
         private void CountStart(double triggerClock)
         {
             _currentLap = 0;
             _currentSection = 0;
             _sectionClocks[_currentSection] = triggerClock;
+            _isCounting = true;
+
+            if (display)
+            {
+                display.CurrentLap = _currentLap;
+            }
         }
 
         private void CountSection(double triggerClock)
         {
             _currentSection++;
             _sectionClocks[_currentSection] = triggerClock;
+
+            display.LastLapTime = GetLapTime(_currentSection);
+            display.LastSplitTime = GetSplitTime(_currentSection);
         }
 
         private void CountLap()
         {
             _currentLap++;
+
+            if (display)
+            {
+                display.CurrentLap = _currentLap;
+            }
         }
 
-        private void CountStop(double triggerClock) { }
+        private void CountStop(double triggerClock)
+        {
+            _nextCheckpoint = null;
+            _isCounting = false;
+        }
     }
 }

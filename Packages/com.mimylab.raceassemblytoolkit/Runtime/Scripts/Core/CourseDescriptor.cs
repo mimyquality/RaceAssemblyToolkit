@@ -16,8 +16,8 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class CourseDescriptor : UdonSharpBehaviour
     {
-        [SerializeField]
-        private string _courseName = "";
+        public string courseName = "";
+        
         [SerializeField]
         private Checkpoint[] _checkpoints = new Checkpoint[0];
         [SerializeField, Min(0)]
@@ -45,19 +45,6 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
-        }
-
-        public Checkpoint GetNextCheckpoint(Checkpoint currentCheckpoint)
-        {
-            var current = System.Array.IndexOf(_checkpoints, currentCheckpoint);
-            if (current < 0) { return null; }
-
-            if (current >= _checkpoints.Length - 1)
-            {
-                return _checkpoints[0];
-            }
-
-            return _checkpoints[current++];
         }
     }
 }
