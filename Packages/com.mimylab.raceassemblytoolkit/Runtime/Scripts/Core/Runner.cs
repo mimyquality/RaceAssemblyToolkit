@@ -17,19 +17,29 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Runner : UdonSharpBehaviour
     {
+        [Header("Common Settings")]
         public string runnerName = "";
 
-        internal RunnerTimeDisplay display;
+        [Header("Advanced Settings")]
+        [SerializeField]
+        private AudioSource _speaker;
+        [SerializeField]
+        private AudioClip _soundStart;
+        [SerializeField]
+        private AudioClip _soundCheckpoint;
+        [SerializeField]
+        private AudioClip _soundGoal;
 
-        private CourseDescriptor _entriedCourse = null;
+        internal RunnerTimeDisplay timeDisplay;
+        internal PlayerRecord playerRecord;
+
+        private CourseDescriptor _entriedCourse;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
-        private Checkpoint _nextCheckpoint = null;
-        private PlayerRecord _playerRecord = null;
-
+        private Checkpoint _nextCheckpoint;
         private int _lapCount;
-        public double[] _sectionClocks = new double[1];
-        public int _currentSection;
-        public int _currentLap;
+        private double[] _sectionClocks = new double[1];
+        private int _currentSection;
+        private int _currentLap;
 
         public CourseDescriptor EntriedCourse { get => _entriedCourse; }
         public int LapCount { get => _lapCount; }
@@ -38,9 +48,9 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void Update()
         {
-            if (display)
+            if (timeDisplay)
             {
-                display.CurrentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
+                timeDisplay.CurrentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
             }
         }
 
@@ -95,17 +105,6 @@ namespace MimyLab.RaceAssemblyToolkit
             return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[section - 1]);
         }
 
-        public TimeSpan GetLapTime(int lap)
-        {
-            // ToDo:セクション間隔のままなのでラップ間隔に要修正
-
-            if (lap < 1) { return TimeSpan.Zero; }
-            if (lap > _lapCount) { return TimeSpan.Zero; }
-            if (_sectionClocks[lap] == 0.0d) { return TimeSpan.Zero; }
-
-            return TimeSpan.FromSeconds(_sectionClocks[lap] - _sectionClocks[lap - 1]);
-        }
-
         public TimeSpan GetSplitTime(int section)
         {
             if (section < 1) { return TimeSpan.Zero; }
@@ -115,6 +114,19 @@ namespace MimyLab.RaceAssemblyToolkit
             return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[0]);
         }
 
+        public TimeSpan GetLapTime(int lap)
+        {
+            // ワンパスモードならセクション時間を返す
+            if (_lapCount < 1) { return GetSectionTime(lap); }
+
+            if (lap < 1) { return TimeSpan.Zero; }
+            if (lap > _lapCount) { return TimeSpan.Zero; }
+
+            lap = lap * _entriedCheckpoints.Length;
+            if (_sectionClocks[lap] == 0.0d) { return TimeSpan.Zero; }
+            return TimeSpan.FromSeconds(_sectionClocks[lap] - _sectionClocks[lap - _entriedCheckpoints.Length]);
+        }
+
         public TimeSpan GetCurrentTime()
         {
             if (_sectionClocks[0] == 0.0d) { return TimeSpan.Zero; }
@@ -122,14 +134,19 @@ namespace MimyLab.RaceAssemblyToolkit
             return TimeSpan.FromSeconds(Time.timeAsDouble - _sectionClocks[0]);
         }
 
-        public TimeSpan GetCurrentLapTime()
+        public TimeSpan GetCurrentSectionTime()
         {
-            return GetLapTime(_currentSection);
+            return GetSectionTime(_currentSection);
         }
 
         public TimeSpan GetCurrentSplitTime()
         {
             return GetSplitTime(_currentSection);
+        }
+
+        public TimeSpan GetCurrentLapTime()
+        {
+            return GetLapTime(_currentLap);
         }
 
         public TimeSpan GetGoalTime()
@@ -142,18 +159,18 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = course;
             _entriedCheckpoints = course.Checkpoints;
             _lapCount = course.LapCount;
-            _playerRecord = course.localPlayerRecord;
+            playerRecord = course.localPlayerRecord;
 
             var sectionCount = _lapCount > 0 ? _lapCount * _entriedCheckpoints.Length + 1 : _entriedCheckpoints.Length;
             _sectionClocks = new double[sectionCount];
 
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
 
-            if (display)
+            if (timeDisplay)
             {
-                display.RunnerName = runnerName;
-                display.EntriedCourseName = _entriedCourse.courseName;
-                display.LapCount = _lapCount;
+                timeDisplay.RunnerName = runnerName;
+                timeDisplay.EntriedCourseName = _entriedCourse.courseName;
+                timeDisplay.LapCount = _lapCount;
             }
         }
 
@@ -179,9 +196,12 @@ namespace MimyLab.RaceAssemblyToolkit
             _sectionClocks[_currentSection] = triggerClock;
             _isCounting = true;
 
-            if (display)
+            if (timeDisplay)
             {
-                display.CurrentLap = _currentLap;
+                timeDisplay.CurrentLap = _currentLap;
+                timeDisplay.LastSectionTime = GetCurrentSectionTime();
+                timeDisplay.LastSplitTime = GetCurrentSplitTime();
+                timeDisplay.LastLapTime = GetCurrentLapTime();
             }
         }
 
@@ -190,17 +210,21 @@ namespace MimyLab.RaceAssemblyToolkit
             _currentSection++;
             _sectionClocks[_currentSection] = triggerClock;
 
-            display.LastLapTime = GetLapTime(_currentSection);
-            display.LastSplitTime = GetSplitTime(_currentSection);
+            if (timeDisplay)
+            {
+                timeDisplay.LastSectionTime = GetCurrentSectionTime();
+                timeDisplay.LastSplitTime = GetCurrentSplitTime();
+            }
         }
 
         private void CountLap()
         {
             _currentLap++;
 
-            if (display)
+            if (timeDisplay)
             {
-                display.CurrentLap = _currentLap;
+                timeDisplay.CurrentLap = _currentLap;
+                timeDisplay.LastLapTime = GetCurrentLapTime();
             }
         }
 

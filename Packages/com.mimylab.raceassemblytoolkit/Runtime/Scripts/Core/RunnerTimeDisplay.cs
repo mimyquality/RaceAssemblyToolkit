@@ -29,9 +29,11 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private TMP_Text _currentTimeText;
         [SerializeField]
-        private TMP_Text _lastLapTimeText;
+        private TMP_Text _lastSectionTimeText;
         [SerializeField]
         private TMP_Text _lastSplitTimeText;
+        [SerializeField]
+        private TMP_Text _lastLapTimeText;
         [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
 
@@ -107,17 +109,17 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private TimeSpan _lastLapTime;
-        public TimeSpan LastLapTime
+        private TimeSpan _lastSectionTime;
+        public TimeSpan LastSectionTime
         {
-            get => _lastLapTime;
+            get => _lastSectionTime;
             set
             {
-                if (_lastLapTimeText && _lastLapTime != value)
+                if (_lastSectionTimeText && _lastSectionTime != value)
                 {
-                    _lastLapTimeText.text = value.ToString(_timeFormat);
+                    _lastSectionTimeText.text = value.ToString(_timeFormat);
                 }
-                _lastLapTime = value;
+                _lastSectionTime = value;
             }
         }
 
@@ -135,9 +137,31 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
+        private TimeSpan _lastLapTime;
+        public TimeSpan LastLapTime
+        {
+            get => _lastLapTime;
+            set
+            {
+                if (_lastLapTimeText && _lastLapTime != value)
+                {
+                    _lastLapTimeText.text = value.ToString(_timeFormat);
+                }
+                _lastLapTime = value;
+            }
+        }
+
         private void Start()
         {
-            _targetRunner.display = this;
+            if (_runnerNameText) { _runnerName = _runnerNameText.text; }
+            if (_entriedCourseNameText) { _entriedCourseName = _entriedCourseNameText.text; }
+            CurrentLap = _currentLap;
+            CurrentTime = _currentTime;
+            LastSectionTime = _lastSectionTime;
+            LastSplitTime = _lastSplitTime;
+            LastLapTime = _lastLapTime;
+
+            _targetRunner.timeDisplay = this;
         }
 
         private void SetLapCountText(int current, int count)
