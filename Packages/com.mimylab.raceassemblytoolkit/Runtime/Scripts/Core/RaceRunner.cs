@@ -13,14 +13,14 @@ namespace MimyLab.RaceAssemblyToolkit
     using VRC.Udon;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Runner")]
+    [AddComponentMenu("Race Assembly Toolkit/Race Runner")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class Runner : UdonSharpBehaviour
+    public class RaceRunner : UdonSharpBehaviour
     {
         [Header("Common Settings")]
         public string runnerName = "";
 
-        [Header("Advanced Settings")]
+        [Header("Additional Settings")]
         [SerializeField]
         private AudioSource _speaker;
         [SerializeField]
@@ -30,31 +30,30 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        internal RunnerTimeDisplay timeDisplay;
+        internal RaceRunnerTimeDisplay timeDisplay;
         internal PlayerRecord playerRecord;
 
+        private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private Checkpoint _nextCheckpoint;
         private int _lapCount;
         private double[] _sectionClocks = new double[1];
+        private TimeSpan _currentTime;
         private int _currentSection;
         private int _currentLap;
 
-        public CourseDescriptor EntriedCourse { get => _entriedCourse; }
-        public int LapCount { get => _lapCount; }
-        public int CurrentSection { get => _currentSection; }
-        public int CurrentLap { get => _currentLap; }
-
         private void Update()
         {
-            if (timeDisplay)
+            var currentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
+            if (currentTime != _currentTime)
             {
-                timeDisplay.CurrentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
+                _currentTime = currentTime;
+                if (timeDisplay) { timeDisplay.CurrentTime = currentTime; }
             }
         }
 
-        public void OnPassCheckpoint(Checkpoint checkpoint, double checkClock)
+        public void OnCheckpointPassed(Checkpoint checkpoint, double checkClock)
         {
             if (checkpoint == _nextCheckpoint)
             {
@@ -94,6 +93,11 @@ namespace MimyLab.RaceAssemblyToolkit
                 CountStart(checkClock);
                 return;
             }
+        }
+
+        public VRCPlayerApi GetDriver()
+        {
+            return _driver;
         }
 
         public TimeSpan GetSectionTime(int section)
@@ -154,6 +158,17 @@ namespace MimyLab.RaceAssemblyToolkit
             return GetSplitTime(_sectionClocks.Length - 1);
         }
 
+        public void SetDriver(VRCPlayerApi driver)
+        {
+            if (!Utilities.IsValid(driver)) { return; }
+
+            if (_driver != driver)
+            {
+                _driver = driver;
+                if (timeDisplay) { timeDisplay.DriverName = driver.displayName; }
+            }
+        }
+
         private void EntryCourse(CourseDescriptor course)
         {
             _entriedCourse = course;
@@ -203,6 +218,8 @@ namespace MimyLab.RaceAssemblyToolkit
                 timeDisplay.LastSplitTime = GetCurrentSplitTime();
                 timeDisplay.LastLapTime = GetCurrentLapTime();
             }
+
+            if (_speaker && _soundStart) { _speaker.PlayOneShot(_soundStart); }
         }
 
         private void CountSection(double triggerClock)
@@ -215,6 +232,8 @@ namespace MimyLab.RaceAssemblyToolkit
                 timeDisplay.LastSectionTime = GetCurrentSectionTime();
                 timeDisplay.LastSplitTime = GetCurrentSplitTime();
             }
+
+            if (_speaker && _soundCheckpoint) { _speaker.PlayOneShot(_soundCheckpoint); }
         }
 
         private void CountLap()
@@ -232,6 +251,8 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             _nextCheckpoint = null;
             _isCounting = false;
+
+            if (_speaker && _soundGoal) { _speaker.PlayOneShot(_soundGoal); }
         }
     }
 }

@@ -12,16 +12,18 @@ namespace MimyLab.RaceAssemblyToolkit
     using TMPro;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/RunnerTime Display")]
+    [AddComponentMenu("Race Assembly Toolkit/Race RunnerTime Display")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class RunnerTimeDisplay : UdonSharpBehaviour
+    public class RaceRunnerTimeDisplay : UdonSharpBehaviour
     {
         [SerializeField]
-        private Runner _targetRunner;
+        private RaceRunner _targetRunner;
 
         [Space]
         [SerializeField]
         private TMP_Text _runnerNameText;
+        [SerializeField]
+        private TMP_Text _driverNameText;
         [SerializeField]
         private TMP_Text _entriedCourseNameText;
         [SerializeField]
@@ -53,6 +55,20 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
+        private string _driverName = "";
+        public string DriverName
+        {
+            get => _driverName;
+            set
+            {
+                if (_driverNameText && _driverName != value)
+                {
+                    _driverNameText.text = value;
+                }
+                _driverName = value;
+            }
+        }
+
         private string _entriedCourseName = "";
         public string EntriedCourseName
         {
@@ -73,7 +89,7 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _lapCount;
             set
             {
-                if (_lapCountText && _lapCount != value)
+                if (_lapCount != value)
                 {
                     SetLapCountText(_currentLap, value);
                 }
@@ -87,7 +103,7 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _currentLap;
             set
             {
-                if (_lapCountText && _currentLap != value)
+                if (_currentLap != value)
                 {
                     SetLapCountText(value, _lapCount);
                 }
@@ -154,19 +170,23 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             if (_runnerNameText) { _runnerName = _runnerNameText.text; }
+            if (_driverNameText) { _driverName = _driverNameText.text; }
             if (_entriedCourseNameText) { _entriedCourseName = _entriedCourseNameText.text; }
-            CurrentLap = _currentLap;
-            CurrentTime = _currentTime;
-            LastSectionTime = _lastSectionTime;
-            LastSplitTime = _lastSplitTime;
-            LastLapTime = _lastLapTime;
+            SetLapCountText(_currentLap, _lapCount);
+            if (_currentTimeText) { _currentTimeText.text = _currentTime.ToString(_timeFormat); }
+            if (_lastSectionTimeText) { _lastSectionTimeText.text = _lastSectionTime.ToString(_timeFormat); }
+            if (_lastSplitTimeText) { _lastSplitTimeText.text = _lastSplitTime.ToString(_timeFormat); }
+            if (_lastLapTimeText) { _lastLapTimeText.text = _lastLapTime.ToString(_timeFormat); }
 
             _targetRunner.timeDisplay = this;
         }
 
         private void SetLapCountText(int current, int count)
         {
-            _lapCountText.text = $"{current} / {count}";
+            if (_lapCountText)
+            {
+                _lapCountText.text = $"{current} / {count}";
+            }
         }
     }
 }

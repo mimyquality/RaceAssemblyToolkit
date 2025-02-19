@@ -25,7 +25,7 @@ namespace MimyLab.RaceAssemblyToolkit
         private string _bestRecordRunnerName = "";
 
         private TimeSpan _recordTime;
-        private Runner _recordRunner;
+        private RaceRunner _recordRunner;
         private string _recordRunnerName = "";
 
         private TimeSpan[] _lapTimes = new TimeSpan[0];

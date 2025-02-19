@@ -49,7 +49,7 @@
       }
     },
     "com.mimylab.dynamicdragondrivesystem": {
-      "version": "1.0.3",
+      "version": "1.0.4",
       "dependencies": {
         "com.vrchat.worlds": "^3.7.4"
       }
