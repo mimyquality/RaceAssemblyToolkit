@@ -16,7 +16,41 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Checkpoint : UdonSharpBehaviour
     {
+        [SerializeField, Header("Activate/Inactivate GameObject")]
+        private GameObject _activateObject;
+        [SerializeField]
+        private GameObject _inactivateObject;
+        [SerializeField, Min(0), Tooltip("Reactivate after specified time if Duration > 0")]
+        private float _duration = 0.0f;
+
+        [Header("Emit particle")]
+        [SerializeField]
+        private ParticleSystem _particleSystem;
+        [SerializeField, Min(0)]
+        private int _emit = 0;
+
+        [Header("Play sound one shot")]
+        [SerializeField]
+        private AudioSource _audioSource;
+        [SerializeField]
+        private AudioClip _audioClip;
+
+        [Header("Execute SendCustomEvent to other UdonBehaviour")]
+        [SerializeField,]
+        private UdonBehaviour _udonBehaviour;
+        [SerializeField]
+        private string _eventName = "";
+
         internal CourseDescriptor course;
+
+        private int _triggerCount = 0;
+
+        private void Start()
+        {
+            if (!_particleSystem) { _particleSystem = GetComponent<ParticleSystem>(); }
+            if (!_audioSource) { _audioSource = GetComponent<AudioSource>(); }
+            if (_audioSource) { if (!_audioClip) { _audioClip = _audioSource.clip; } }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -27,7 +61,7 @@ namespace MimyLab.RaceAssemblyToolkit
             var runner = other.GetComponent<RaceRunner>();
             if (!runner) { return; }
 
-            // ToDo:チェックポイント通過イベント
+            ReactiveRunnerTrigger();
 
             var driver = runner.GetDriver();
             if (Utilities.IsValid(driver) && driver.isLocal)
@@ -51,7 +85,7 @@ namespace MimyLab.RaceAssemblyToolkit
                 var runner = driverAsPlayer.targetRunner;
                 if (!runner) { return; }
 
-                // ToDo:チェックポイント通過イベント
+                ReactiveRunnerTrigger();
 
                 if (player.isLocal)
                 {
@@ -60,6 +94,32 @@ namespace MimyLab.RaceAssemblyToolkit
 
                 return;
             }
+        }
+
+        public void _ReactivateGameObject()
+        {
+            if (--_triggerCount > 0) { return; }
+
+            if (_activateObject) { _activateObject.SetActive(false); }
+            if (_inactivateObject) { _inactivateObject.SetActive(true); }
+        }
+
+        private void ReactiveRunnerTrigger()
+        {
+            if (_activateObject || _inactivateObject)
+            {
+                if (_activateObject) { _activateObject.SetActive(true); }
+                if (_inactivateObject) { _inactivateObject.SetActive(false); }
+
+                if (_duration > 0.0f)
+                {
+                    _triggerCount++;
+                    SendCustomEventDelayedSeconds(nameof(_ReactivateGameObject), _duration);
+                }
+            }
+            if (_particleSystem && _emit > 0) { _particleSystem.Emit(_emit); }
+            if (_audioSource && _audioClip) { _audioSource.PlayOneShot(_audioClip); }
+            if (_udonBehaviour && _eventName != "") { _udonBehaviour.SendCustomEvent(_eventName); }
         }
     }
 }

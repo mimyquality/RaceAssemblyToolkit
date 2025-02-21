@@ -20,6 +20,14 @@ namespace MimyLab.RaceAssemblyToolkit
             SendCustomEventDelayedFrames(nameof(_SetDriver), 1);
         }
 
+        private void Start()
+        {
+            if (!targetRunner)
+            {
+                targetRunner = GetComponentInChildren<RaceRunner>(true);
+            }
+        }
+
         public override void OnMasterTransferred(VRCPlayerApi newMaster)
         {
             SendCustomEventDelayedFrames(nameof(_SetDriver), 1);

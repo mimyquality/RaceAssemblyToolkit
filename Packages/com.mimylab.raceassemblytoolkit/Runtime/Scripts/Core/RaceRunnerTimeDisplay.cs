@@ -39,8 +39,6 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
 
-        private string _lapCountString = "0/0";
-
         private string _runnerName = "";
         public string RunnerName
         {
