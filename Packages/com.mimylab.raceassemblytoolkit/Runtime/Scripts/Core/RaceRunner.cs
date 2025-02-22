@@ -30,9 +30,9 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        internal RaceRunnerTimeDisplay timeDisplay;
         internal PlayerRecord playerRecord;
 
+        private RaceRunnerTimeDisplay _timeDisplay;
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
@@ -49,7 +49,7 @@ namespace MimyLab.RaceAssemblyToolkit
             if (currentTime != _currentTime)
             {
                 _currentTime = currentTime;
-                if (timeDisplay) { timeDisplay.CurrentTime = currentTime; }
+                if (_timeDisplay) { _timeDisplay.CurrentTime = currentTime; }
             }
         }
 
@@ -158,14 +158,27 @@ namespace MimyLab.RaceAssemblyToolkit
             return GetSplitTime(_sectionClocks.Length - 1);
         }
 
-        public void SetDriver(VRCPlayerApi driver)
+        internal void SetTimeDisplay(RaceRunnerTimeDisplay timeDisplay)
+        {
+            if (!timeDisplay) { return; }
+
+            _timeDisplay = timeDisplay;
+            _timeDisplay.RunnerName = runnerName;
+        }
+
+        internal void SetDriver(VRCPlayerApi driver)
         {
             if (!Utilities.IsValid(driver)) { return; }
 
             if (_driver != driver)
             {
                 _driver = driver;
-                if (timeDisplay) { timeDisplay.DriverName = driver.displayName; }
+                CountReset();
+
+                if (_timeDisplay)
+                {
+                    _timeDisplay.DriverName = driver.displayName;
+                }
             }
         }
 
@@ -181,11 +194,10 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
 
-            if (timeDisplay)
+            if (_timeDisplay)
             {
-                timeDisplay.RunnerName = runnerName;
-                timeDisplay.EntriedCourseName = _entriedCourse.courseName;
-                timeDisplay.LapCount = _lapCount;
+                _timeDisplay.EntriedCourseName = _entriedCourse.courseName;
+                _timeDisplay.LapCount = _lapCount;
             }
         }
 
@@ -204,6 +216,29 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private bool _isCounting;
 
+        private void CountReset()
+        {
+            _entriedCourse = null;
+            _entriedCheckpoints = new Checkpoint[0];
+            _lapCount = 0;
+            playerRecord = null;
+            _nextCheckpoint = null;
+            _currentLap = 0;
+            _currentSection = 0;
+            _sectionClocks = new double[1];
+            _isCounting = false;
+
+            if (_timeDisplay)
+            {
+                _timeDisplay.EntriedCourseName = "";
+                _timeDisplay.LapCount = _lapCount;
+                _timeDisplay.CurrentLap = _currentLap;
+                _timeDisplay.LastSectionTime = GetCurrentSectionTime();
+                _timeDisplay.LastSplitTime = GetCurrentSplitTime();
+                _timeDisplay.LastLapTime = GetCurrentLapTime();
+            }
+        }
+
         private void CountStart(double triggerClock)
         {
             _currentLap = 0;
@@ -211,12 +246,12 @@ namespace MimyLab.RaceAssemblyToolkit
             _sectionClocks[_currentSection] = triggerClock;
             _isCounting = true;
 
-            if (timeDisplay)
+            if (_timeDisplay)
             {
-                timeDisplay.CurrentLap = _currentLap;
-                timeDisplay.LastSectionTime = GetCurrentSectionTime();
-                timeDisplay.LastSplitTime = GetCurrentSplitTime();
-                timeDisplay.LastLapTime = GetCurrentLapTime();
+                _timeDisplay.CurrentLap = _currentLap;
+                _timeDisplay.LastSectionTime = GetCurrentSectionTime();
+                _timeDisplay.LastSplitTime = GetCurrentSplitTime();
+                _timeDisplay.LastLapTime = GetCurrentLapTime();
             }
 
             if (_speaker && _soundStart) { _speaker.PlayOneShot(_soundStart); }
@@ -227,10 +262,10 @@ namespace MimyLab.RaceAssemblyToolkit
             _currentSection++;
             _sectionClocks[_currentSection] = triggerClock;
 
-            if (timeDisplay)
+            if (_timeDisplay)
             {
-                timeDisplay.LastSectionTime = GetCurrentSectionTime();
-                timeDisplay.LastSplitTime = GetCurrentSplitTime();
+                _timeDisplay.LastSectionTime = GetCurrentSectionTime();
+                _timeDisplay.LastSplitTime = GetCurrentSplitTime();
             }
 
             if (_speaker && _soundCheckpoint) { _speaker.PlayOneShot(_soundCheckpoint); }
@@ -240,10 +275,10 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             _currentLap++;
 
-            if (timeDisplay)
+            if (_timeDisplay)
             {
-                timeDisplay.CurrentLap = _currentLap;
-                timeDisplay.LastLapTime = GetCurrentLapTime();
+                _timeDisplay.CurrentLap = _currentLap;
+                _timeDisplay.LastLapTime = GetCurrentLapTime();
             }
         }
 

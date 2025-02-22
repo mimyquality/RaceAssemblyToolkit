@@ -350,19 +350,19 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: timeDisplay
+      Data: playerRecord
     - Name: $v
       Entry: 7
       Data: 21|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: timeDisplay
+      Data: playerRecord
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 22|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: MimyLab.RaceAssemblyToolkit.RaceRunnerTimeDisplay, RaceAssemblyToolkit
+      Data: MimyLab.RaceAssemblyToolkit.PlayerRecord, RaceAssemblyToolkit
     - Name: 
       Entry: 8
       Data: 
@@ -410,19 +410,19 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: playerRecord
+      Data: _timeDisplay
     - Name: $v
       Entry: 7
       Data: 25|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: playerRecord
+      Data: _timeDisplay
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 26|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: MimyLab.RaceAssemblyToolkit.PlayerRecord, RaceAssemblyToolkit
+      Data: MimyLab.RaceAssemblyToolkit.RaceRunnerTimeDisplay, RaceAssemblyToolkit
     - Name: 
       Entry: 8
       Data: 

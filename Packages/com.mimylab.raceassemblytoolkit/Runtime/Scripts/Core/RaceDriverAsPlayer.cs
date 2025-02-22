@@ -19,7 +19,7 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         private void Start()
         {
-            _SetDriver();
+            SendCustomEventDelayedFrames(nameof(_SetDriver), 1);
         }
     }
 }

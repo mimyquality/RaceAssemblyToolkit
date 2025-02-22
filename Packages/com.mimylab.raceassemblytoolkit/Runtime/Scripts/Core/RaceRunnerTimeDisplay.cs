@@ -167,16 +167,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void Start()
         {
-            if (_runnerNameText) { _runnerName = _runnerNameText.text; }
-            if (_driverNameText) { _driverName = _driverNameText.text; }
-            if (_entriedCourseNameText) { _entriedCourseName = _entriedCourseNameText.text; }
-            SetLapCountText(_currentLap, _lapCount);
-            if (_currentTimeText) { _currentTimeText.text = _currentTime.ToString(_timeFormat); }
-            if (_lastSectionTimeText) { _lastSectionTimeText.text = _lastSectionTime.ToString(_timeFormat); }
-            if (_lastSplitTimeText) { _lastSplitTimeText.text = _lastSplitTime.ToString(_timeFormat); }
-            if (_lastLapTimeText) { _lastLapTimeText.text = _lastLapTime.ToString(_timeFormat); }
-
-            _targetRunner.timeDisplay = this;
+            _targetRunner.SetTimeDisplay(this);
         }
 
         private void SetLapCountText(int current, int count)
