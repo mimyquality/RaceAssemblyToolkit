@@ -1,7 +1,7 @@
 {
   "name": "com.mimylab.raceassemblytoolkit",
   "displayName": "Race Assembly Toolkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Collection of general purpose race and timeattack gimmicks. Utilizes VRChat's Udonsharp.",
   "unity": "2022.3",
   "author": {

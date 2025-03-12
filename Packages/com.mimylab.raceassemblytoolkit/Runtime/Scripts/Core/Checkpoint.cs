@@ -42,6 +42,7 @@ namespace MimyLab.RaceAssemblyToolkit
         private string _eventName = "";
 
         internal CourseDescriptor course;
+        internal RaceDriverAsPlayer driverAsPlayerTemplate;
 
         private int _triggerCount = 0;
 
@@ -75,24 +76,19 @@ namespace MimyLab.RaceAssemblyToolkit
             var triggerClock = Time.timeAsDouble;
 
             if (!Utilities.IsValid(player)) { return; }
+            if (!Utilities.IsValid(driverAsPlayerTemplate)) { return; }
 
-            var playerObjects = player.GetPlayerObjects();
-            for (int i = 0; i < playerObjects.Length; i++)
+            var driverAsPlayer = (RaceDriverAsPlayer)player.FindComponentInPlayerObjects(driverAsPlayerTemplate);
+            if (!driverAsPlayer) { return; }
+
+            var runner = driverAsPlayer.targetRunner;
+            if (!runner) { return; }
+
+            ReactiveRunnerTrigger();
+
+            if (player.isLocal)
             {
-                var driverAsPlayer = playerObjects[i].GetComponent<RaceDriverAsPlayer>();
-                if (!driverAsPlayer) { continue; }
-
-                var runner = driverAsPlayer.targetRunner;
-                if (!runner) { return; }
-
-                ReactiveRunnerTrigger();
-
-                if (player.isLocal)
-                {
-                    runner.OnCheckpointPassed(this, triggerClock);
-                }
-
-                return;
+                runner.OnCheckpointPassed(this, triggerClock);
             }
         }
 
