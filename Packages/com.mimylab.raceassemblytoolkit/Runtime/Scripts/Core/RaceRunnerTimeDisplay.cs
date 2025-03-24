@@ -12,7 +12,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using TMPro;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Race RunnerTime Display")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Race RunnerTime Display")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunnerTimeDisplay : UdonSharpBehaviour
     {

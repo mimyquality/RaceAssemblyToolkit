@@ -10,10 +10,9 @@ namespace MimyLab.RaceAssemblyToolkit
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using VRC.Udon;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Race Runner")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunner : UdonSharpBehaviour
     {
@@ -158,14 +157,6 @@ namespace MimyLab.RaceAssemblyToolkit
             return GetSplitTime(_sectionClocks.Length - 1);
         }
 
-        internal void SetTimeDisplay(RaceRunnerTimeDisplay timeDisplay)
-        {
-            if (!timeDisplay) { return; }
-
-            _timeDisplay = timeDisplay;
-            _timeDisplay.RunnerName = runnerName;
-        }
-
         internal void SetDriver(VRCPlayerApi driver)
         {
             if (!Utilities.IsValid(driver)) { return; }
@@ -180,6 +171,14 @@ namespace MimyLab.RaceAssemblyToolkit
                     _timeDisplay.DriverName = driver.displayName;
                 }
             }
+        }
+
+        internal void SetTimeDisplay(RaceRunnerTimeDisplay timeDisplay)
+        {
+            if (!timeDisplay) { return; }
+
+            _timeDisplay = timeDisplay;
+            _timeDisplay.RunnerName = runnerName;
         }
 
         private void EntryCourse(CourseDescriptor course)

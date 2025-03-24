@@ -7,7 +7,7 @@ https://opensource.org/license/mit
 namespace MimyLab.RaceAssemblyToolkit
 {
     using UdonSharp;
-    using UnityEngine;
+    //using UnityEngine;
     using VRC.SDKBase;
 
     public class RaceDriver : UdonSharpBehaviour

@@ -8,11 +8,11 @@ namespace MimyLab.RaceAssemblyToolkit
 {
     using UdonSharp;
     using UnityEngine;
-    using VRC.SDKBase;
+    //using VRC.SDKBase;
     using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Race Driver as Player")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Race Driver as Player")]
     [RequireComponent(typeof(VRCPlayerObject))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceDriverAsPlayer : RaceDriver

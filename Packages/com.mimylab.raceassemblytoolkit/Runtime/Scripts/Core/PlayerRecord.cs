@@ -10,11 +10,10 @@ namespace MimyLab.RaceAssemblyToolkit
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using VRC.Udon;
     using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Player Record")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Player Record")]
     [RequireComponent(typeof(VRCPlayerObject), typeof(VRCEnablePersistence))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class PlayerRecord : UdonSharpBehaviour

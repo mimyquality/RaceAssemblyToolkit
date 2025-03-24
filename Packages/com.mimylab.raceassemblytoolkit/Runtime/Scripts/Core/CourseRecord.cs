@@ -9,12 +9,10 @@ namespace MimyLab.RaceAssemblyToolkit
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using VRC.Udon;
     using VRC.SDK3.Components;
-    using VRC.Udon.Serialization.OdinSerializer;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Course Record")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Course Record")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class CourseRecord : UdonSharpBehaviour
     {

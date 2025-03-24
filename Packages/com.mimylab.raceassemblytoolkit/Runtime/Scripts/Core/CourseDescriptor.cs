@@ -9,10 +9,9 @@ namespace MimyLab.RaceAssemblyToolkit
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using VRC.Udon;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Course Descriptor")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Course Descriptor")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class CourseDescriptor : UdonSharpBehaviour
     {

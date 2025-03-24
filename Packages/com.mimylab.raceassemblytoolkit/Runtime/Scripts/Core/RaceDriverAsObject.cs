@@ -11,7 +11,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using VRC.SDKBase;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Race Driver as Object")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Race Driver as Object")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceDriverAsObject : RaceDriver
     {
