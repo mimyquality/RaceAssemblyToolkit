@@ -16,7 +16,7 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunner : UdonSharpBehaviour
     {
-        [Header("Common Settings")]
+        [Header("Base Settings")]
         public string runnerName = "";
 
         [Header("Additional Settings")]
@@ -44,11 +44,14 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void Update()
         {
-            var currentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
-            if (currentTime != _currentTime)
+            if (_timeDisplay)
             {
-                _currentTime = currentTime;
-                if (_timeDisplay) { _timeDisplay.CurrentTime = currentTime; }
+                var currentTime = _isCounting ? GetCurrentTime() : GetGoalTime();
+                if (currentTime != _currentTime)
+                {
+                    _currentTime = currentTime;
+                    _timeDisplay.CurrentTime = currentTime;
+                }
             }
         }
 
@@ -161,9 +164,9 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (!Utilities.IsValid(driver)) { return; }
 
-            if (_driver != driver)
+            if (this._driver != driver)
             {
-                _driver = driver;
+                this._driver = driver;
                 CountReset();
 
                 if (_timeDisplay)

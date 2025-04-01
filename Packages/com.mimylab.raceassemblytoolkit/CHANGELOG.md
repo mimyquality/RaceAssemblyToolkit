@@ -4,6 +4,10 @@
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)のフォーマットと、
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)の採番に則り更新されます。  
 
+## [0.2.1] - 2025/4/1
+
+カメラドローンに対応できるようクラス設計を変更
+
 ## [0.2.0] - 2025/3/24
 
 Checkpoint Reaction シリーズを実装
@@ -20,6 +24,7 @@ Checkpoint Reaction シリーズを実装
 
 初期セットアップ
 
+[0.2.1]: https://github.com/mimyquality/RaceAssemblyToolkit/releases/tag/0.2.1
 [0.2.0]: https://github.com/mimyquality/RaceAssemblyToolkit/releases/tag/0.2.0
 [0.1.1]: https://github.com/mimyquality/RaceAssemblyToolkit/releases/tag/0.1.1
 [0.1.0]: https://github.com/mimyquality/RaceAssemblyToolkit/releases/tag/0.1.0

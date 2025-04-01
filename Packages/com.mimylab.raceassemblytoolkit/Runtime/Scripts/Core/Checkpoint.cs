@@ -19,7 +19,9 @@ namespace MimyLab.RaceAssemblyToolkit
         private ICheckpointReaction[] _reactions = new ICheckpointReaction[0];
 
         internal CourseDescriptor course;
-        internal RaceDriverAsPlayer driverAsPlayerTemplate;
+        internal RaceRunner[] entryRunners = new RaceRunner[0];
+        internal RaceRunnerAsPlayer entryRunnerAsPlayer;
+        internal RaceRunnerAsDrone entryRunnerAsDrone;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -29,10 +31,11 @@ namespace MimyLab.RaceAssemblyToolkit
 
             var runner = other.GetComponent<RaceRunner>();
             if (!runner) { return; }
+            if (System.Array.IndexOf(entryRunners, runner) < 0) { return; }
 
             var driver = runner.GetDriver();
             if (!Utilities.IsValid(driver)) { return; }
-            
+
             if (driver.isLocal)
             {
                 runner.OnCheckpointPassed(this, triggerClock);
@@ -46,21 +49,20 @@ namespace MimyLab.RaceAssemblyToolkit
             var triggerClock = Time.timeAsDouble;
 
             if (!Utilities.IsValid(player)) { return; }
-            if (!Utilities.IsValid(driverAsPlayerTemplate)) { return; }
+            if (!Utilities.IsValid(entryRunnerAsPlayer)) { return; }
 
-            var driverAsPlayer = (RaceDriverAsPlayer)player.FindComponentInPlayerObjects(driverAsPlayerTemplate);
-            if (!driverAsPlayer) { return; }
-
-            var runner = driverAsPlayer.targetRunner;
-            if (!runner) { return; }
+            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(entryRunnerAsPlayer);
+            if (!runnerAsPlayer) { return; }
 
             if (player.isLocal)
             {
-                runner.OnCheckpointPassed(this, triggerClock);
+                runnerAsPlayer.OnCheckpointPassed(this, triggerClock);
             }
 
             React(player);
         }
+
+        //public override void OnDroneTriggerEnter(VRCDroneApi drone) { }
 
         private void React(VRCPlayerApi driver)
         {

@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
-  m_Name: RaceDriverAsPlayer
+  m_Name: RaceDriver
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: b8b4bfb1e33179a47bc379d4a7d57b00,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 5a34710b752dc54478be81dfeca5920f,
     type: 2}
   udonAssembly: 
   assemblyError: 
-  sourceCsScript: {fileID: 11500000, guid: a9638820130ed19429cc334a467a467d, type: 3}
+  sourceCsScript: {fileID: 11500000, guid: e915eda282c81a74abd696da2195104f, type: 3}
   scriptVersion: 2
   compiledVersion: 2
   behaviourSyncMode: 2
   hasInteractEvent: 0
-  scriptID: -8464286439433176180
+  scriptID: 7645898323626167471
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 

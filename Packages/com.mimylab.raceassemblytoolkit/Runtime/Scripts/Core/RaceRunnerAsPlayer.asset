@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
-  m_Name: RaceRunner
+  m_Name: RaceRunnerAsPlayer
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 9204f27c9823a6e43a7c8874f8e1ad13,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 32092bc648b3fd646b0fb02e60a5648c,
     type: 2}
   udonAssembly: 
   assemblyError: 
-  sourceCsScript: {fileID: 11500000, guid: 86891e87b9759f4419732fc21354ec65, type: 3}
+  sourceCsScript: {fileID: 11500000, guid: bdea6216684b9634ba229b0e9860fa0b, type: 3}
   scriptVersion: 2
   compiledVersion: 2
-  behaviourSyncMode: 1
+  behaviourSyncMode: 2
   hasInteractEvent: 0
-  scriptID: 2559050141046285977
+  scriptID: -5879548601953543061
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 

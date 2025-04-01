@@ -15,6 +15,7 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class CourseDescriptor : UdonSharpBehaviour
     {
+        [Header("Course Settings")]
         public string courseName = "";
 
         [SerializeField]
@@ -23,10 +24,16 @@ namespace MimyLab.RaceAssemblyToolkit
         private int _lapCount = 0;
         [SerializeField, Min(0.0f)]
         private float _recordOverCut = 0.0f;
+        [SerializeField, Min(0.0f)]
+        private float _recordUnderCut = float.MaxValue;
 
-        [Header("Additional Settings")]
+        [Header("Runner Entry")]
         [SerializeField]
-        private RaceDriverAsPlayer _raceDriverAsPlayer;
+        private RaceRunner[] _runners = new RaceRunner[0];
+        [SerializeField]
+        private RaceRunnerAsPlayer _runnerAsPlayer;
+        //[SerializeField]
+        //private RaceRunnerAsDrone _runnerAsDrone;
 
         internal PlayerRecord localPlayerRecord;
 
@@ -41,7 +48,9 @@ namespace MimyLab.RaceAssemblyToolkit
             for (int i = 0; i < _checkpoints.Length; i++)
             {
                 _checkpoints[i].course = this;
-                _checkpoints[i].driverAsPlayerTemplate = _raceDriverAsPlayer;
+                _checkpoints[i].entryRunners = _runners;
+                _checkpoints[i].entryRunnerAsPlayer = _runnerAsPlayer;
+                //_checkpoints[i].entryRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;
