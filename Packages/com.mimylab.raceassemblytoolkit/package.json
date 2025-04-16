@@ -8,7 +8,9 @@
     "name": "Mimy Quality",
     "url": "https://github.com/mimyquality"
   },
-  "documentationUrl":"",
+  "documentationUrl": "https://github.com/mimyquality/RaceAssemblyToolkit/blob/main/Packages/com.mimylab.raceassemblytoolkit/README.md",
+  "changelogUrl":"https://github.com/mimyquality/RaceAssemblyToolkit/blob/main/Packages/com.mimylab.raceassemblytoolkit/CHANGELOG.md",
+  "licensesUrl":"https://github.com/mimyquality/RaceAssemblyToolkit/blob/main/Packages/com.mimylab.raceassemblytoolkit/LICENSE.md",
   "dependencies": {},
   "gitDependencies": {},
   "vpmDependencies": {
