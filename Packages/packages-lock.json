@@ -19,7 +19,7 @@
       "dependencies": {}
     },
     "com.unity.ai.navigation": {
-      "version": "1.1.5",
+      "version": "1.1.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -64,17 +64,8 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.ide.rider": {
-      "version": "3.0.35",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.22",
+      "version": "2.0.23",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -243,6 +234,12 @@
       "dependencies": {
         "com.unity.postprocessing": "3.1.1"
       }
+    },
+    "jp.lilxyzw.editortoolbox": {
+      "version": "file:jp.lilxyzw.editortoolbox",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "net.kaikoga.pen": {
       "version": "file:net.kaikoga.pen",

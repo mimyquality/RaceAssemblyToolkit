@@ -14,6 +14,9 @@
     },
     "com.mimylab.dynamicdragondrivesystem": {
       "version": "1.0.0"
+    },
+    "jp.lilxyzw.editortoolbox": {
+      "version": "1.6.3"
     }
   },
   "locked": {
@@ -22,13 +25,13 @@
       "dependencies": {}
     },
     "com.vrchat.base": {
-      "version": "3.8.0",
+      "version": "3.8.1",
       "dependencies": {}
     },
     "com.vrchat.worlds": {
-      "version": "3.8.0",
+      "version": "3.8.1",
       "dependencies": {
-        "com.vrchat.base": "3.8.0"
+        "com.vrchat.base": "3.8.1"
       }
     },
     "dev.onevr.vrworldtoolkit": {
@@ -36,9 +39,9 @@
       "dependencies": {}
     },
     "com.mimylab.fukuroudon": {
-      "version": "3.3.0",
+      "version": "3.4.0",
       "dependencies": {
-        "com.vrchat.worlds": "^3.7.4"
+        "com.vrchat.worlds": "^3.8.1"
       }
     },
     "net.kaikoga.pen": {
@@ -49,10 +52,14 @@
       }
     },
     "com.mimylab.dynamicdragondrivesystem": {
-      "version": "1.0.4",
+      "version": "1.0.5",
       "dependencies": {
         "com.vrchat.worlds": "^3.7.4"
       }
+    },
+    "jp.lilxyzw.editortoolbox": {
+      "version": "1.6.3",
+      "dependencies": {}
     }
   }
 }

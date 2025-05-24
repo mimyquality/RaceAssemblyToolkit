@@ -48,8 +48,8 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             var triggerClock = Time.timeAsDouble;
 
-            if (!Utilities.IsValid(player)) { return; }
             if (!Utilities.IsValid(entryRunnerAsPlayer)) { return; }
+            if (!Utilities.IsValid(player)) { return; }
 
             var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(entryRunnerAsPlayer);
             if (!runnerAsPlayer) { return; }
@@ -62,7 +62,26 @@ namespace MimyLab.RaceAssemblyToolkit
             React(player);
         }
 
-        //public override void OnDroneTriggerEnter(VRCDroneApi drone) { }
+        public override void OnDroneTriggerEnter(VRCDroneApi drone)
+        {
+            var triggerClock = Time.timeAsDouble;
+
+            if (!Utilities.IsValid(entryRunnerAsDrone)) { return; }
+            if (!Utilities.IsValid(drone)) { return; }
+
+            var driver = drone.GetPlayer();
+            if (!Utilities.IsValid(driver)) { return; }
+
+            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(entryRunnerAsDrone);
+            if (!runnerAsDrone) { return; }
+
+            if (driver.isLocal)
+            {
+                runnerAsDrone.OnCheckpointPassed(this, triggerClock);
+            }
+
+            React(driver);
+        }
 
         private void React(VRCPlayerApi driver)
         {

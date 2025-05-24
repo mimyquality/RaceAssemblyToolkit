@@ -32,8 +32,8 @@ namespace MimyLab.RaceAssemblyToolkit
         private RaceRunner[] _runners = new RaceRunner[0];
         [SerializeField]
         private RaceRunnerAsPlayer _runnerAsPlayer;
-        //[SerializeField]
-        //private RaceRunnerAsDrone _runnerAsDrone;
+        [SerializeField]
+        private RaceRunnerAsDrone _runnerAsDrone;
 
         internal PlayerRecord localPlayerRecord;
 
@@ -50,7 +50,7 @@ namespace MimyLab.RaceAssemblyToolkit
                 _checkpoints[i].course = this;
                 _checkpoints[i].entryRunners = _runners;
                 _checkpoints[i].entryRunnerAsPlayer = _runnerAsPlayer;
-                //_checkpoints[i].entryRunnerAsDrone = _runnerAsDrone;
+                _checkpoints[i].entryRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;

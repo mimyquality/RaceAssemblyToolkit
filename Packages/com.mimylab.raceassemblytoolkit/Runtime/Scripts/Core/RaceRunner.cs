@@ -17,7 +17,7 @@ namespace MimyLab.RaceAssemblyToolkit
     public class RaceRunner : UdonSharpBehaviour
     {
         [Header("Base Settings")]
-        public string runnerName = "";
+        public string variety = "";
 
         [Header("Additional Settings")]
         [SerializeField]
@@ -181,7 +181,7 @@ namespace MimyLab.RaceAssemblyToolkit
             if (!timeDisplay) { return; }
 
             _timeDisplay = timeDisplay;
-            _timeDisplay.RunnerName = runnerName;
+            _timeDisplay.RunnerVariety = variety;
         }
 
         private void EntryCourse(CourseDescriptor course)

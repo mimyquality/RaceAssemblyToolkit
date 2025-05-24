@@ -21,7 +21,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         [Space]
         [SerializeField]
-        private TMP_Text _runnerNameText;
+        private TMP_Text _runnerVarietyText;
         [SerializeField]
         private TMP_Text _driverNameText;
         [SerializeField]
@@ -39,17 +39,17 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
 
-        private string _runnerName = "";
-        public string RunnerName
+        private string _runnerVariety = "";
+        public string RunnerVariety
         {
-            get => _runnerName;
+            get => _runnerVariety;
             set
             {
-                if (_runnerNameText && _runnerName != value)
+                if (_runnerVarietyText && _runnerVariety != value)
                 {
-                    _runnerNameText.text = value;
+                    _runnerVarietyText.text = value;
                 }
-                _runnerName = value;
+                _runnerVariety = value;
             }
         }
 

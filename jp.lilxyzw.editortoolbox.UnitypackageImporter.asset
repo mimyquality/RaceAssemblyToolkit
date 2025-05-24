@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 53
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cfde2293e444c740906820ed431157c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  importedAssets:
+  - name: None
+    guids: []
+  - name: playermonitor.unitypackage
+    guids:
+    - 50ff4b1bba1f7df4f9e81487b4f85395
+    - c938973c8d612674b94a917640da1ce9
+    - 72a8081a761b69e4fae8fbbf3ab1fe33
+    - 2f99519b8641e3d459c872346444d44c
+    - 12c0bfd773d1e5c4c8a1152ec3605194

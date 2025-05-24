@@ -22,7 +22,7 @@ namespace MimyLab.RaceAssemblyToolkit
             var raceDriver = GetComponent<RaceDriver>();
             raceDriver.targetRunner = this;
             
-            runnerName = "Player";
+            variety = "Player";
         }
     }
 }
