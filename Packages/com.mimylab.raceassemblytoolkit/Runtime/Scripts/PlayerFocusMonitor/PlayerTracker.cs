@@ -20,7 +20,7 @@ namespace MimyLab.RaceAssemblyToolkit
     }
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Player Focus Monitor/Player Tracker")]
+    [AddComponentMenu("Race Assembly Toolkit/PlayerFocus Monitor/Player Tracker")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class PlayerTracker : UdonSharpBehaviour
     {
@@ -46,12 +46,12 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (!Utilities.IsValid(_targetPlayer)) { return; }
 
-            var rot = _targetPlayer.GetRotation();
             var pos = Vector3.zero;
             switch (focusPoint)
             {
-                //case PlayerTrackerFocusPoint.Origin:
-                //    break;
+                case PlayerTrackerFocusPoint.Origin:
+                    pos = _targetPlayer.GetPosition();
+                    break;
                 case PlayerTrackerFocusPoint.EyeHeight:
                     pos = _targetPlayer.GetPosition();
                     pos.y += _targetPlayer.GetAvatarEyeHeightAsMeters();
@@ -66,6 +66,9 @@ namespace MimyLab.RaceAssemblyToolkit
                     pos = _targetPlayer.GetBonePosition(HumanBodyBones.LeftHand);
                     break;
             }
+
+            var rot = _targetPlayer.GetRotation();
+
             this.transform.SetPositionAndRotation(pos, rot);
         }
 
