@@ -25,13 +25,13 @@
       "dependencies": {}
     },
     "com.vrchat.base": {
-      "version": "3.8.1",
+      "version": "3.8.2",
       "dependencies": {}
     },
     "com.vrchat.worlds": {
-      "version": "3.8.1",
+      "version": "3.8.2",
       "dependencies": {
-        "com.vrchat.base": "3.8.1"
+        "com.vrchat.base": "3.8.2"
       }
     },
     "dev.onevr.vrworldtoolkit": {
@@ -39,9 +39,9 @@
       "dependencies": {}
     },
     "com.mimylab.fukuroudon": {
-      "version": "3.6.0",
+      "version": "3.8.0",
       "dependencies": {
-        "com.vrchat.worlds": "^3.8.1"
+        "com.vrchat.worlds": "^3.8.2"
       }
     },
     "net.kaikoga.pen": {
@@ -58,7 +58,7 @@
       }
     },
     "jp.lilxyzw.editortoolbox": {
-      "version": "1.6.3",
+      "version": "1.7.0",
       "dependencies": {}
     }
   }

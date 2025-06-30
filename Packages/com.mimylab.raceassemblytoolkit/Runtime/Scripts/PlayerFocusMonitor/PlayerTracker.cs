@@ -4,7 +4,7 @@ Released under the MIT license
 https://opensource.org/license/mit
 */
 
-namespace MimyLab.RaceAssemblyToolkit
+namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
 {
     using UdonSharp;
     using UnityEngine;
