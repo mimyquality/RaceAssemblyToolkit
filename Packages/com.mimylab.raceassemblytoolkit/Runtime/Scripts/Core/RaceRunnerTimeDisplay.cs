@@ -9,6 +9,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using System;
     using UdonSharp;
     using UnityEngine;
+    using VRC.SDKBase;
     using TMPro;
 
     [Icon(ComponentIconPath.RAT)]
@@ -81,17 +82,17 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private int _lapCount;
-        public int LapCount
+        private int _numberOfLaps;
+        public int NumberOfLaps
         {
-            get => _lapCount;
+            get => _numberOfLaps;
             set
             {
-                if (_lapCount != value)
+                if (_numberOfLaps != value)
                 {
                     SetLapCountText(_currentLap, value);
                 }
-                _lapCount = value;
+                _numberOfLaps = value;
             }
         }
 
@@ -103,7 +104,7 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 if (_currentLap != value)
                 {
-                    SetLapCountText(value, _lapCount);
+                    SetLapCountText(value, _numberOfLaps);
                 }
                 _currentLap = value;
             }
@@ -165,9 +166,24 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private void Start()
+        private void Update()
         {
-            _targetRunner.SetTimeDisplay(this);
+            if (!_targetRunner) { return; }
+
+            RunnerVariety = _targetRunner.variety;
+
+            var driver = _targetRunner.GetDriver();
+            DriverName = Utilities.IsValid(driver) ? driver.displayName : "";
+
+            var course = _targetRunner.EntriedCourse;
+            EntriedCourseName = course ? course.courseName : "";
+
+            NumberOfLaps = course.NumberOfLaps;
+            CurrentLap = _targetRunner.LatestLap;
+            CurrentTime = _targetRunner.CurrentTime;  // 動いてない
+            LastSectionTime = _targetRunner.LatestSectionTime;
+            LastSplitTime = _targetRunner.LatestSplitTime;
+            LastLapTime = _targetRunner.LatestLapTime;  // 動いてない
         }
 
         private void SetLapCountText(int current, int count)

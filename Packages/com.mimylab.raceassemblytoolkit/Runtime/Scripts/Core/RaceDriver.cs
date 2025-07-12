@@ -17,29 +17,37 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         public RaceRunner targetRunner;
 
-        private void OnEnable()
+        private bool _initialized = false;
+        private void Initialize()
         {
-            SendCustomEventDelayedFrames(nameof(_SetDriver), 1);
+            if (_initialized) { return; }
+
+            if (!targetRunner) { targetRunner = GetComponentInChildren<RaceRunner>(true); }
+
+            _initialized = true;
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            if (!targetRunner)
-            {
-                targetRunner = GetComponentInChildren<RaceRunner>(true);
-            }
+            Initialize();
+
+            _SetDriver();
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
         {
+            Initialize();
+
             _SetDriver();
         }
 
         public override void OnMasterTransferred(VRCPlayerApi newMaster)
         {
-            SendCustomEventDelayedFrames(nameof(_SetDriver), 1);
+            Initialize();
+
+            _SetDriver();
         }
-        
+
         public void _SetDriver()
         {
             if (targetRunner)

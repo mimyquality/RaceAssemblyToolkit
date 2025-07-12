@@ -14,7 +14,6 @@ namespace MimyLab.RaceAssemblyToolkit
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner as Drone")]
     [RequireComponent(typeof(VRCPlayerObject), typeof(RaceDriver))]
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceRunnerAsDrone : RaceRunner
     {
         private void Reset()

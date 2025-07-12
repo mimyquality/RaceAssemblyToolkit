@@ -14,7 +14,6 @@ namespace MimyLab.RaceAssemblyToolkit
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner as Player")]
     [RequireComponent(typeof(VRCPlayerObject), typeof(RaceDriver))]
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceRunnerAsPlayer : RaceRunner
     {
         private void Reset()

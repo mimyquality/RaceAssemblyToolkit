@@ -33,14 +33,12 @@ namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
 
             _initialized = true;
         }
-        private void Start()
-        {
-            Initialize();
-        }
 
         public void UpdateView()
         {
-            if (!controller) { return; }
+            Initialize();
+
+            if (!controller) { return; }            
 
             switch (_viewType)
             {

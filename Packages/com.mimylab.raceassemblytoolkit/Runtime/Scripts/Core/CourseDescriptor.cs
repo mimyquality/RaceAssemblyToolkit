@@ -19,15 +19,17 @@ namespace MimyLab.RaceAssemblyToolkit
         public string courseName = "";
 
         [SerializeField]
+        private int _revision = 1;
+        [SerializeField]
         private Checkpoint[] _checkpoints = new Checkpoint[0];
         [SerializeField, Min(0)]
-        private int _lapCount = 0;
+        private int _numberOfLaps = 0;
         [SerializeField, Min(0.0f)]
         private float _recordOverCut = 0.0f;
         [SerializeField, Min(0.0f)]
         private float _recordUnderCut = float.MaxValue;
 
-        [Header("Runner Entry")]
+        [Header("Participate Runners")]
         [SerializeField]
         private RaceRunner[] _runners = new RaceRunner[0];
         [SerializeField]
@@ -37,7 +39,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         internal PlayerRecord localPlayerRecord;
 
-        public int LapCount { get => _lapCount; }
+        public int NumberOfLaps { get => _numberOfLaps; }
         public Checkpoint[] Checkpoints { get => _checkpoints; }
 
         private bool _initialized = false;
@@ -48,9 +50,9 @@ namespace MimyLab.RaceAssemblyToolkit
             for (int i = 0; i < _checkpoints.Length; i++)
             {
                 _checkpoints[i].course = this;
-                _checkpoints[i].entryRunners = _runners;
-                _checkpoints[i].entryRunnerAsPlayer = _runnerAsPlayer;
-                _checkpoints[i].entryRunnerAsDrone = _runnerAsDrone;
+                _checkpoints[i].participateRunners = _runners;
+                _checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
+                _checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;

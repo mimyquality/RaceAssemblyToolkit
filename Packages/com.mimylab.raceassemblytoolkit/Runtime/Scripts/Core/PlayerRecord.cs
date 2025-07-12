@@ -21,6 +21,9 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         internal CourseDescriptor course;
 
+        internal RaceRunner[] entryRunners = new RaceRunner[0];
+        internal RaceRunner[] entryRunnersAs = new RaceRunner[0];
+
         private TimeSpan _bestRecordTime;
         private string _bestRecordRunnerVariety = "";
 
@@ -30,9 +33,6 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private TimeSpan[] _historyRecordTime = new TimeSpan[0];
         private int[] _historyRunnerNumber = new int[0];
-
-        internal RaceRunner[] entryRunners = new RaceRunner[0];
-        internal RaceRunner[] entryRunnersAs = new RaceRunner[0];
 
         private bool _initialized = false;
         private void Initialize()

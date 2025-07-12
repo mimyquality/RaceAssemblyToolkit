@@ -57,7 +57,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 8234654155388465359}
   _targetRunner: {fileID: 0}
-  _runnerNameText: {fileID: 6461667184754921567}
+  _runnerVarietyText: {fileID: 6461667184754921567}
   _driverNameText: {fileID: 7911799634919694658}
   _entriedCourseNameText: {fileID: 3559417978015198704}
   _lapCountText: {fileID: 6202653045222828746}
