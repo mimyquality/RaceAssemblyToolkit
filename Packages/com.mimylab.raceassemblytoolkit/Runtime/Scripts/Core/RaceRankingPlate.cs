@@ -10,13 +10,15 @@ namespace MimyLab.RaceAssemblyToolkit
     using UnityEngine;
     using VRC.SDKBase;
     using VRC.Udon;
+    using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Core/Race Ranking Board")]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Race Ranking Plate")]
     [UdonBehaviourSyncMode(BehaviourSyncMode. None)]
-    public class RaceRankingBoard : UdonSharpBehaviour
+    public class RaceRankingPlate : UdonSharpBehaviour
     {
-
+        internal CourseDescriptor course;
+        internal RaceRunner runner;
 
         private bool _initialized = false;
         private void Initialize()

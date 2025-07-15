@@ -32,6 +32,8 @@ namespace MimyLab.RaceAssemblyToolkit
         internal PlayerRecord playerRecord;
 
         [UdonSynced]
+        int sync_numberOfLaps;
+        [UdonSynced]
         int sync_latestSection;
         [UdonSynced]
         int sync_latestLap;
@@ -55,16 +57,18 @@ namespace MimyLab.RaceAssemblyToolkit
         private TimeSpan _latestLapTime;
 
         public CourseDescriptor EntriedCourse { get => _entriedCourse; }
+        public int NumberOfLaps { get => _entriedNumberOfLaps; }
         public TimeSpan CurrentTime { get => (_sectionClocks[0] == 0.0d) ? TimeSpan.Zero : TimeSpan.FromSeconds(Time.timeAsDouble - _sectionClocks[0]); }
         public TimeSpan TotalTime { get => GetSplitTime(_sectionClocks.Length - 1); }
         public int LatestSection { get => _latestSection; }
-        public int LatestLap { get => _latestLap; }
+        public int LatestLap { get => _entriedNumberOfLaps > 0 ? _latestLap : _latestSection; }
         public TimeSpan LatestSectionTime { get => _latestSectionTime; }
         public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan LatestLapTime { get => _latestLapTime; }
 
         public override void OnPreSerialization()
         {
+            sync_numberOfLaps = _entriedNumberOfLaps;
             sync_latestSection = _latestSection;
             sync_latestLap = _latestLap;
             sync_latestSectionTime = _latestSectionTime.Ticks;
@@ -74,6 +78,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         public override void OnDeserialization()
         {
+            _entriedNumberOfLaps = sync_numberOfLaps;
             _latestSection = sync_latestSection;
             _latestLap = sync_latestLap;
             _latestSectionTime = TimeSpan.FromTicks(sync_latestSectionTime);
