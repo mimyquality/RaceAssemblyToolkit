@@ -36,7 +36,7 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _maxLaps;
             set
             {
-                if (_maxLapsText) { _maxLapsText.text = value.ToString(); }
+                if (_maxLapsText) { _maxLapsText.text = value.ToString("D2"); }
                 _maxLaps = value;
             }
         }
@@ -47,7 +47,7 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _lap;
             set
             {
-                if (_lapText) { _lapText.text = value.ToString(); }
+                if (_lapText) { _lapText.text = value.ToString("D2"); }
                 _lap = value;
             }
         }

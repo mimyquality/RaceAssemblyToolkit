@@ -24,6 +24,7 @@ namespace MimyLab.RaceAssemblyToolkit
         private StopwatchDisplay _stopwatchDisplay;
 
         private VRCPickup _pickup;
+        private bool _isHeld = false;
         private bool _isUserInVR = false;
         private bool _isCounting = false;
 
@@ -40,27 +41,13 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
+
+            RefreshDisplay();
         }
 
         private void Update()
         {
-            if (!_isUserInVR)
-            {
-                if (_pickup && _pickup.IsHeld)
-                {
-                    if (Input.GetKeyDown(KeyCode.Mouse0))
-                    {
-                        if (Input.GetKey(KeyCode.LeftShift))
-                        {
-                            CountResetLap(Time.timeAsDouble);
-                        }
-                        else
-                        {
-                            CountStartStop(Time.timeAsDouble);
-                        }
-                    }
-                }
-            }
+            InputDesktop();
 
             if (_isCounting)
             {
@@ -76,9 +63,8 @@ namespace MimyLab.RaceAssemblyToolkit
             var triggerClock = Time.timeAsDouble;
 
             if (!_isUserInVR) { return; }
+            if (!_isHeld) { return; }
             if (!value) { return; }
-            if (!_pickup) { return; }
-            if (!_pickup.IsHeld) { return; }
 
             if (args.handType == HandType.LEFT)
             {
@@ -107,6 +93,69 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
+        public override void OnPickup()
+        {
+            SendCustomEventDelayedFrames(nameof(_OnPostPickup), 1);
+        }
+        public void _OnPostPickup()
+        {
+            _isHeld = true;
+        }
+
+        public override void OnDrop()
+        {
+            _isHeld = false;
+        }
+
+        private int _selectedLap = 0;
+        public void IncrementLap()
+        {
+            var lap = _stopwatch.Lap;
+            if (lap < 1) { return; }
+
+            _selectedLap = _selectedLap < lap ? _selectedLap + 1 : 1;
+
+            if (_stopwatchDisplay)
+            {
+                _stopwatchDisplay.Lap = _selectedLap;
+                _stopwatchDisplay.LapTime = _stopwatch.GetLapTime(_selectedLap);
+                _stopwatchDisplay.SplitTime = _stopwatch.GetSplitTime(_selectedLap);
+            }
+        }
+
+        public void DecrementLap()
+        {
+            var lap = _stopwatch.Lap;
+            if (lap < 1) { return; }
+
+            _selectedLap = _selectedLap > 1 ? _selectedLap - 1 : lap;
+
+            if (_stopwatchDisplay)
+            {
+                _stopwatchDisplay.Lap = _selectedLap;
+                _stopwatchDisplay.LapTime = _stopwatch.GetLapTime(_selectedLap);
+                _stopwatchDisplay.SplitTime = _stopwatch.GetSplitTime(_selectedLap);
+            }
+        }
+
+        private void InputDesktop()
+        {
+            if (_isUserInVR) { return; }
+            if (!_isHeld) { return; }
+
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    CountResetLap(Time.timeAsDouble);
+                }
+                else
+                {
+                    CountStartStop(Time.timeAsDouble);
+                }
+            }
+        }
+
         private void CountStartStop(double triggerClock)
         {
             if (_isCounting)
@@ -120,14 +169,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _isCounting = _stopwatch.IsCounting;
 
-            if (_stopwatchDisplay)
-            {
-                _stopwatchDisplay.MaxLaps = _stopwatch.MaxLaps;
-                _stopwatchDisplay.Lap = _stopwatch.Lap;
-                _stopwatchDisplay.LapTime = _stopwatch.GetLapTime(_stopwatch.Lap);
-                _stopwatchDisplay.SplitTime = _stopwatch.GetSplitTime(_stopwatch.Lap);
-                _stopwatchDisplay.TotalTime = _stopwatch.GetCurrentTime();
-            }
+            RefreshDisplay();
         }
 
         private void CountResetLap(double triggerClock)
@@ -143,13 +185,20 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _isCounting = _stopwatch.IsCounting;
 
+            RefreshDisplay();
+        }
+
+        private void RefreshDisplay()
+        {
+            _selectedLap = _stopwatch.Lap;
+
             if (_stopwatchDisplay)
             {
-                _stopwatchDisplay.MaxLaps = _stopwatch.MaxLaps;
-                _stopwatchDisplay.Lap = _stopwatch.Lap;
+                _stopwatchDisplay.MaxLaps = _selectedLap;
+                _stopwatchDisplay.Lap = _selectedLap;
                 _stopwatchDisplay.LapTime = _stopwatch.GetLapTime(_stopwatch.Lap);
                 _stopwatchDisplay.SplitTime = _stopwatch.GetSplitTime(_stopwatch.Lap);
-                _stopwatchDisplay.TotalTime = _stopwatch.GetCurrentTime();
+                _stopwatchDisplay.TotalTime = _isCounting ? _stopwatch.GetCurrentTime() : _stopwatch.GetTotalTime();
             }
         }
     }
