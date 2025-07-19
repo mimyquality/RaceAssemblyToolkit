@@ -17,17 +17,17 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         [Header("Course Settings")]
         public string courseName = "";
-
+        
         [SerializeField]
-        private int _revision = 1;
+        internal int revision = 1;
         [SerializeField]
-        private Checkpoint[] _checkpoints = new Checkpoint[0];
+        internal Checkpoint[] checkpoints = new Checkpoint[0];
         [SerializeField, Min(0)]
-        private int _numberOfLaps = 0;
-        [SerializeField, Min(0.0f)]
-        private float _recordOverCut = 0.0f;
-        [SerializeField, Min(0.0f)]
-        private float _recordUnderCut = float.MaxValue;
+        internal int numberOfLaps = 0;
+        [SerializeField, Min(0.0f), Tooltip("sec")]
+        internal float recordOverCut = 0.0f;
+        [SerializeField, Min(0.0f), Tooltip("sec")]
+        internal float recordUnderCut = float.MaxValue;
 
         [Header("Participate Runners")]
         [SerializeField]
@@ -37,22 +37,19 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private RaceRunnerAsDrone _runnerAsDrone;
 
-        internal PlayerRecord localPlayerRecord;
-
-        public int NumberOfLaps { get => _numberOfLaps; }
-        public Checkpoint[] Checkpoints { get => _checkpoints; }
+        internal PlayerRecord localPersonalRecord;
 
         private bool _initialized = false;
         private void Initialize()
         {
             if (_initialized) { return; }
 
-            for (int i = 0; i < _checkpoints.Length; i++)
+            for (int i = 0; i < checkpoints.Length; i++)
             {
-                _checkpoints[i].course = this;
-                _checkpoints[i].participateRunners = _runners;
-                _checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
-                _checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
+                checkpoints[i].course = this;
+                checkpoints[i].participateRunners = _runners;
+                checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
+                checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;

@@ -178,9 +178,9 @@ namespace MimyLab.RaceAssemblyToolkit
             var course = _targetRunner.EntriedCourse;
             EntriedCourseName = course ? course.courseName : "";
 
-            NumberOfLaps = course.NumberOfLaps;
+            NumberOfLaps = course.numberOfLaps;
             CurrentLap = _targetRunner.LatestLap;
-            CurrentTime = _targetRunner.CurrentTime;  // 動いてない
+            CurrentTime = _targetRunner._GetCurrentTime();  // 動いてない
             LastSectionTime = _targetRunner.LatestSectionTime;
             LastSplitTime = _targetRunner.LatestSplitTime;
             LastLapTime = _targetRunner.LatestLapTime;  // 動いてない

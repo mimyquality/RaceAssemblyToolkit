@@ -21,7 +21,7 @@ namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
         SelectedPlayerName,
     }
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.PlayerFocusMonitor)]
     [AddComponentMenu("Race Assembly Toolkit/PlayerFocus Monitor/PlayerSelect Controller")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class PlayerSelectController : UdonSharpBehaviour

@@ -10,7 +10,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using UdonSharp;
     using UnityEngine;
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.Stopwatch)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Stopwatch")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Stopwatch : UdonSharpBehaviour
@@ -115,6 +115,18 @@ namespace MimyLab.RaceAssemblyToolkit
             if (_clocks[lap] == 0.0d) { return TimeSpan.Zero; }
 
             return TimeSpan.FromSeconds(_clocks[lap] - _clocks[lap - 1]);
+        }
+
+        public TimeSpan GetLapTime(int lap, int anchor)
+        {
+            if (lap < 1) { return TimeSpan.Zero; }
+            if (lap >= _clocks.Length) { return TimeSpan.Zero; }
+            if (_clocks[lap] == 0.0d) { return TimeSpan.Zero; }
+            if (anchor >= lap) { return TimeSpan.Zero; }
+
+            anchor = Mathf.Max(anchor, 0);
+
+            return TimeSpan.FromSeconds(_clocks[lap] - _clocks[anchor]);
         }
 
         public TimeSpan GetSplitTime(int lap)

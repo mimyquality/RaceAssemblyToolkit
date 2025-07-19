@@ -10,7 +10,7 @@ namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
     using UnityEngine;
     using UnityEngine.UI;
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.PlayerFocusMonitor)]
     [AddComponentMenu("Race Assembly Toolkit/PlayerFocus Monitor/PlayerSelect Button")]
     [RequireComponent(typeof(Button))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]

@@ -12,7 +12,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using VRC.Udon.Common;
     using VRC.SDK3.Components;
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.Stopwatch)]
     [AddComponentMenu("Race Assembly Toolkit/Interactions/Stopwatch Controller")]
     [RequireComponent(typeof(VRCPickup))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]

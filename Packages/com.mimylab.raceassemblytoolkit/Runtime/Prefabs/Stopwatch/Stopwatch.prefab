@@ -55,7 +55,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 7639441205451132499}
-  _maxLaps: 99
+  _maxLaps: 1
 --- !u!114 &7639441205451132499
 MonoBehaviour:
   m_ObjectHideFlags: 0

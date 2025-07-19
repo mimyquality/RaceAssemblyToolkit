@@ -11,7 +11,7 @@ namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
     using UnityEngine;
     using VRC.SDKBase;
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.PlayerFocusMonitor)]
     [AddComponentMenu("Race Assembly Toolkit/PlayerFocus Monitor/PlayerSelect View")]
     [RequireComponent(typeof(TMP_Text))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]

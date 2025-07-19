@@ -19,7 +19,7 @@ namespace MimyLab.RaceAssemblyToolkit.PlayerFocusMonitor
         leftHand,
     }
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.PlayerFocusMonitor)]
     [AddComponentMenu("Race Assembly Toolkit/PlayerFocus Monitor/Player Tracker")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class PlayerTracker : UdonSharpBehaviour

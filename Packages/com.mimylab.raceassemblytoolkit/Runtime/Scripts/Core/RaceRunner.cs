@@ -16,6 +16,10 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class RaceRunner : UdonSharpBehaviour
     {
+        [Header("Require References")]
+        [SerializeField]
+        private Stopwatch _stopwatch;
+
         [Header("Base Settings")]
         public string variety = "";
 
@@ -29,7 +33,7 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        internal PlayerRecord playerRecord;
+        internal PlayerRecord personalRecord;
 
         [UdonSynced]
         int sync_numberOfLaps;
@@ -40,15 +44,14 @@ namespace MimyLab.RaceAssemblyToolkit
         [UdonSynced]
         long sync_latestSectionTime;
         [UdonSynced]
-        long sync_latestSplitTime;
-        [UdonSynced]
         long sync_latestLapTime;
+        [UdonSynced]
+        long sync_latestSplitTime;
 
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private int _entriedNumberOfLaps;
-        private double[] _sectionClocks = new double[1];
         private Checkpoint _nextCheckpoint;
         private int _latestSection;
         private int _latestLap;
@@ -58,8 +61,6 @@ namespace MimyLab.RaceAssemblyToolkit
 
         public CourseDescriptor EntriedCourse { get => _entriedCourse; }
         public int NumberOfLaps { get => _entriedNumberOfLaps; }
-        public TimeSpan CurrentTime { get => (_sectionClocks[0] == 0.0d) ? TimeSpan.Zero : TimeSpan.FromSeconds(Time.timeAsDouble - _sectionClocks[0]); }
-        public TimeSpan TotalTime { get => GetSplitTime(_sectionClocks.Length - 1); }
         public int LatestSection { get => _latestSection; }
         public int LatestLap { get => _entriedNumberOfLaps > 0 ? _latestLap : _latestSection; }
         public TimeSpan LatestSectionTime { get => _latestSectionTime; }
@@ -86,7 +87,49 @@ namespace MimyLab.RaceAssemblyToolkit
             _latestLapTime = TimeSpan.FromTicks(sync_latestLapTime);
         }
 
-        public void OnCheckpointPassed(Checkpoint checkpoint, double triggerClock)
+        public VRCPlayerApi GetDriver()
+        {
+            return _driver;
+        }
+
+        public TimeSpan _GetSectionTime(int section)
+        {
+            return _stopwatch.GetLapTime(section);
+        }
+
+        public TimeSpan _GetSplitTime(int section)
+        {
+            return _stopwatch.GetSplitTime(section);
+        }
+
+        public TimeSpan _GetLapTime(int lap)
+        {
+            if (lap < 1) { return TimeSpan.Zero; }
+
+            // ワンパスモードならセクション時間を返す
+            if (_entriedNumberOfLaps < 1) { return _GetLapTime(lap); }
+
+            var section = lap * _entriedCheckpoints.Length;
+            return _stopwatch.GetLapTime(section, section - _entriedCheckpoints.Length);
+        }
+
+        public TimeSpan _GetSplitTimeByLap(int lap)
+        {
+            if (lap < 1) { return TimeSpan.Zero; }
+
+            // ワンパスモードならセクション時間を返す
+            if (_entriedNumberOfLaps < 1) { return _GetSectionTime(lap); }
+
+            var section = lap * _entriedCheckpoints.Length;
+            return _stopwatch.GetSplitTime(section);
+        }
+
+        public TimeSpan _GetCurrentTime()
+        {
+            return _stopwatch.GetCurrentTime();
+        }
+
+        internal void OnCheckpointPassed(Checkpoint checkpoint, double triggerClock)
         {
             // 次のチェックポイント通過処理
             if (checkpoint == _nextCheckpoint)
@@ -94,11 +137,11 @@ namespace MimyLab.RaceAssemblyToolkit
                 CountSection(triggerClock);
 
                 // ワンパスモード
-                if (checkpoint == _entriedCheckpoints[_entriedCheckpoints.Length - 1])
+                if (_entriedNumberOfLaps < 1)
                 {
-                    if (_entriedNumberOfLaps == 0)
+                    if (checkpoint == _entriedCheckpoints[_entriedCheckpoints.Length - 1])
                     {
-                        CountStop();
+                        CountStop(triggerClock);
                         return;
                     }
                 }
@@ -106,10 +149,10 @@ namespace MimyLab.RaceAssemblyToolkit
                 // 周回モード
                 if (checkpoint == _entriedCheckpoints[0])
                 {
-                    CountLap();
+                    CountLap(triggerClock);
                     if (_latestLap >= _entriedNumberOfLaps)
                     {
-                        CountStop();
+                        CountStop(triggerClock);
                         return;
                     }
                 }
@@ -120,7 +163,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             var course = checkpoint.course;
             if (!course) { return; }
-            var checkpoints = course.Checkpoints;
+            var checkpoints = course.checkpoints;
             if (checkpoints.Length < 1) { return; }
 
             // コース出場処理
@@ -130,53 +173,6 @@ namespace MimyLab.RaceAssemblyToolkit
                 CountStart(triggerClock);
                 return;
             }
-        }
-
-        public VRCPlayerApi GetDriver()
-        {
-            return _driver;
-        }
-
-        public TimeSpan GetSectionTime(int section)
-        {
-            if (section < 1) { return TimeSpan.Zero; }
-            if (section >= _sectionClocks.Length) { return TimeSpan.Zero; }
-            if (_sectionClocks[section] == 0.0d) { return TimeSpan.Zero; }
-
-            return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[section - 1]);
-        }
-
-        public TimeSpan GetSplitTime(int section)
-        {
-            if (section < 1) { return TimeSpan.Zero; }
-            if (section >= _sectionClocks.Length) { return TimeSpan.Zero; }
-            if (_sectionClocks[section] == 0.0d) { return TimeSpan.Zero; }
-
-            return TimeSpan.FromSeconds(_sectionClocks[section] - _sectionClocks[0]);
-        }
-
-        public TimeSpan GetLapTime(int lap)
-        {
-            // ワンパスモードならセクション時間を返す
-            if (_entriedNumberOfLaps < 1) { return GetSectionTime(lap); }
-
-            if (lap < 1) { return TimeSpan.Zero; }
-            if (lap > _entriedNumberOfLaps) { return TimeSpan.Zero; }
-
-            lap = lap * _entriedCheckpoints.Length;
-            if (_sectionClocks[lap] == 0.0d) { return TimeSpan.Zero; }
-
-            return TimeSpan.FromSeconds(_sectionClocks[lap] - _sectionClocks[lap - _entriedCheckpoints.Length]);
-        }
-
-        public TimeSpan GetLapTimeBySectionCount(int section)
-        {
-            // ワンパスモードならセクション時間を返す
-            if (_entriedNumberOfLaps < 1) { return GetSectionTime(section); }
-
-            var lap = _entriedCheckpoints.Length > 0 ? section / _entriedCheckpoints.Length : 0;
-
-            return GetLapTime(lap);
         }
 
         internal void SetDriver(VRCPlayerApi driver)
@@ -199,14 +195,15 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Entry(CourseDescriptor course)
         {
             _entriedCourse = course;
-            _entriedCheckpoints = course.Checkpoints;
-            _entriedNumberOfLaps = course.NumberOfLaps;
-            playerRecord = course.localPlayerRecord;
-
-            var sectionCount = _entriedNumberOfLaps > 0 ? _entriedNumberOfLaps * _entriedCheckpoints.Length + 1 : _entriedCheckpoints.Length;
-            _sectionClocks = new double[sectionCount];
-
+            _entriedCheckpoints = course.checkpoints;
+            _entriedNumberOfLaps = course.numberOfLaps;
+            personalRecord = course.localPersonalRecord;
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
+
+            var sectionCount = _entriedNumberOfLaps > 0 ? _entriedNumberOfLaps * _entriedCheckpoints.Length : _entriedCheckpoints.Length - 1;
+            _stopwatch.CountReset(sectionCount);
+
+            RequestSerialization();
         }
 
         private Checkpoint GetNextCheckpoint(Checkpoint currentCheckpoint)
@@ -222,27 +219,28 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = null;
             _entriedCheckpoints = new Checkpoint[0];
             _entriedNumberOfLaps = 0;
-            playerRecord = null;
+            personalRecord = null;
             _nextCheckpoint = null;
-            _sectionClocks = new double[1];
+
+            _stopwatch.CountReset(0);
 
             _latestSection = 0;
-            _latestLap = 0;
-            _latestSectionTime = GetSectionTime(_latestSection);
-            _latestSplitTime = GetSplitTime(_latestSection);
-            _latestLapTime = GetLapTime(_latestLap);
+            _latestSectionTime = _GetSectionTime(_latestSection);
+            _latestSplitTime = _GetSplitTime(_latestSection);
+            _latestLapTime = _GetLapTime(_latestLap);
 
             RequestSerialization();
         }
 
         private void CountStart(double triggerClock)
         {
+            _stopwatch.CountStart(triggerClock);
+
             _latestSection = 0;
             _latestLap = 0;
-            _sectionClocks[_latestSection] = triggerClock;
-            _latestSectionTime = GetSectionTime(_latestSection);
-            _latestSplitTime = GetSplitTime(_latestSection);
-            _latestLapTime = GetLapTime(_latestLap);
+            _latestSectionTime = _GetSectionTime(_latestSection);
+            _latestSplitTime = _GetSplitTime(_latestSection);
+            _latestLapTime = _GetLapTime(_latestLap);
 
             RequestSerialization();
 
@@ -251,28 +249,30 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void CountSection(double triggerClock)
         {
-            _latestSection++;
-            _sectionClocks[_latestSection] = triggerClock;
+            _stopwatch.CountLap(triggerClock);
 
-            _latestSectionTime = GetSectionTime(_latestSection);
-            _latestSplitTime = GetSplitTime(_latestSection);
+            _latestSection++;
+            _latestSectionTime = _GetSectionTime(_latestSection);
+            _latestSplitTime = _GetSplitTime(_latestSection);
 
             RequestSerialization();
 
             if (_speaker && _soundCheckpoint) { _speaker.PlayOneShot(_soundCheckpoint); }
         }
 
-        private void CountLap()
+        private void CountLap(double triggerClock)
         {
             _latestLap++;
-            _latestLapTime = GetLapTime(_latestLap);
+            _latestLapTime = _GetLapTime(_latestLap);
 
             RequestSerialization();
         }
 
-        private void CountStop()
+        private void CountStop(double triggerClock)
         {
             _nextCheckpoint = null;
+
+            _stopwatch.CountStop(triggerClock);
 
             if (_speaker && _soundGoal) { _speaker.PlayOneShot(_soundGoal); }
         }

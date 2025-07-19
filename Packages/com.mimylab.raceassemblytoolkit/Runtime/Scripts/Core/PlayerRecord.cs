@@ -41,7 +41,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             if (Networking.IsOwner(this.gameObject))
             {
-                course.localPlayerRecord = this;
+                course.localPersonalRecord = this;
             }
 
             _initialized = true;

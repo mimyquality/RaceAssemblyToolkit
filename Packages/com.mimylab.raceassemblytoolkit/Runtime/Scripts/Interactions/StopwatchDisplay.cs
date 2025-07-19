@@ -12,7 +12,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using TMPro;
     using System;
 
-    [Icon(ComponentIconPath.RAT)]
+    [Icon(ComponentIconPath.Stopwatch)]
     [AddComponentMenu("Race Assembly Toolkit/Interactions/Stopwatch Display")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class StopwatchDisplay : UdonSharpBehaviour
