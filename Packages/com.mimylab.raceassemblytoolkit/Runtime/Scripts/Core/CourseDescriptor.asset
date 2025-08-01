@@ -659,7 +659,7 @@ MonoBehaviour:
       Data: 45|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: MimyLab.RaceAssemblyToolkit.PlayerRecord, RaceAssemblyToolkit
+      Data: MimyLab.RaceAssemblyToolkit.PersonalRecord, RaceAssemblyToolkit
     - Name: 
       Entry: 8
       Data: 

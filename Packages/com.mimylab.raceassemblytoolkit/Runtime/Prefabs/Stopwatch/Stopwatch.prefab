@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5610752899122558487}
   - component: {fileID: 8400189141192659890}
   - component: {fileID: 7639441205451132499}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: Stopwatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 7639441205451132499}
-  _maxLaps: 1
+  _maxLaps: 99
 --- !u!114 &7639441205451132499
 MonoBehaviour:
   m_ObjectHideFlags: 0

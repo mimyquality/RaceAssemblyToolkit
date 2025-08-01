@@ -16,7 +16,7 @@ namespace MimyLab.RaceAssemblyToolkit
     [AddComponentMenu("Race Assembly Toolkit/Core/Player Record")]
     [RequireComponent(typeof(VRCPlayerObject), typeof(VRCEnablePersistence))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class PlayerRecord : UdonSharpBehaviour
+    public class PersonalRecord : UdonSharpBehaviour
     {
         [SerializeField]
         internal CourseDescriptor course;

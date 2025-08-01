@@ -37,7 +37,7 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private RaceRunnerAsDrone _runnerAsDrone;
 
-        internal PlayerRecord localPersonalRecord;
+        internal PersonalRecord localPersonalRecord;
 
         private bool _initialized = false;
         private void Initialize()

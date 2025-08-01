@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: /
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -239,8 +239,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 87:65'43"210
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -281,7 +281,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -374,8 +374,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 87:65'43"210
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -416,7 +416,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -717,8 +717,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 87:65'43"210
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -759,7 +759,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -852,8 +852,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -894,7 +894,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -1188,8 +1188,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Spl
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
+  m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 0
@@ -1529,8 +1529,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 99
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1571,7 +1571,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -1664,8 +1664,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Lap
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84d170c002aa22e41951d68286a94647, type: 2}
-  m_sharedMaterial: {fileID: 5366928169867780196, guid: 84d170c002aa22e41951d68286a94647,
+  m_fontAsset: {fileID: 11400000, guid: b8b42addcc2d92b499aeba7976ee34f6, type: 2}
+  m_sharedMaterial: {fileID: 2658825370512490109, guid: b8b42addcc2d92b499aeba7976ee34f6,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1711,7 +1711,7 @@ MonoBehaviour:
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
+  m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 0

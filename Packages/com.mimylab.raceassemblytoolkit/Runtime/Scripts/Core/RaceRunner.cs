@@ -33,7 +33,7 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        internal PlayerRecord personalRecord;
+        internal PersonalRecord personalRecord;
 
         [UdonSynced]
         int sync_numberOfLaps;
@@ -44,9 +44,9 @@ namespace MimyLab.RaceAssemblyToolkit
         [UdonSynced]
         long sync_latestSectionTime;
         [UdonSynced]
-        long sync_latestLapTime;
-        [UdonSynced]
         long sync_latestSplitTime;
+        [UdonSynced]
+        long sync_latestLapTime;
 
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
@@ -169,7 +169,7 @@ namespace MimyLab.RaceAssemblyToolkit
             // コース出場処理
             if (checkpoint == checkpoints[0])
             {
-                Entry(course);
+                CourseEntry(course);
                 CountStart(triggerClock);
                 return;
             }
@@ -192,7 +192,7 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private void Entry(CourseDescriptor course)
+        private void CourseEntry(CourseDescriptor course)
         {
             _entriedCourse = course;
             _entriedCheckpoints = course.checkpoints;
@@ -225,6 +225,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _stopwatch.CountReset(0);
 
             _latestSection = 0;
+            _latestLap = 0;
             _latestSectionTime = _GetSectionTime(_latestSection);
             _latestSplitTime = _GetSplitTime(_latestSection);
             _latestLapTime = _GetLapTime(_latestLap);

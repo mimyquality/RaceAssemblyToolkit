@@ -437,7 +437,7 @@ MonoBehaviour:
       Data: 28|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: MimyLab.RaceAssemblyToolkit.PlayerRecord, RaceAssemblyToolkit
+      Data: MimyLab.RaceAssemblyToolkit.PersonalRecord, RaceAssemblyToolkit
     - Name: 
       Entry: 8
       Data: 
@@ -707,13 +707,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: sync_latestLapTime
+      Data: sync_latestSplitTime
     - Name: $v
       Entry: 7
       Data: 44|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: sync_latestLapTime
+      Data: sync_latestSplitTime
     - Name: <UserType>k__BackingField
       Entry: 9
       Data: 41
@@ -761,13 +761,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: sync_latestSplitTime
+      Data: sync_latestLapTime
     - Name: $v
       Entry: 7
       Data: 47|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: sync_latestSplitTime
+      Data: sync_latestLapTime
     - Name: <UserType>k__BackingField
       Entry: 9
       Data: 41

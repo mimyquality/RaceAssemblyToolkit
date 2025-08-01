@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3945259541108166483}
   - component: {fileID: 3775917240680590804}
   - component: {fileID: 4430039154011093576}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ PrefabInstance:
     - target: {fileID: 7018976518176848395, guid: 1ebd4190bdf8e3645bf6d8e169782bbb,
         type: 3}
       propertyPath: m_Name
-      value: StopwatchController
+      value: HandyStopwatch
       objectReference: {fileID: 0}
     - target: {fileID: 8750032831466156872, guid: 1ebd4190bdf8e3645bf6d8e169782bbb,
         type: 3}

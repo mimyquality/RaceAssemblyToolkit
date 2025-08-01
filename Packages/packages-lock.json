@@ -247,6 +247,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "net.narazaka.vrchat.tmp-fallback-fonts-jp": {
+      "version": "file:net.narazaka.vrchat.tmp-fallback-fonts-jp",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
