@@ -9,9 +9,6 @@
     "com.mimylab.fukuroudon": {
       "version": "3.2.0"
     },
-    "net.kaikoga.pen": {
-      "version": "1.0.2"
-    },
     "com.mimylab.dynamicdragondrivesystem": {
       "version": "1.0.0"
     },
@@ -19,6 +16,12 @@
       "version": "1.6.3"
     },
     "net.narazaka.vrchat.tmp-fallback-fonts-jp": {
+      "version": "1.0.2"
+    },
+    "net.ureishi.qvpen": {
+      "version": "3.3.8"
+    },
+    "com.mimylab.penoptimizationutility": {
       "version": "1.0.2"
     }
   },
@@ -47,13 +50,6 @@
         "com.vrchat.worlds": "^3.8.2"
       }
     },
-    "net.kaikoga.pen": {
-      "version": "1.0.2",
-      "dependencies": {
-        "com.vrchat.base": "^3.0.0",
-        "com.vrchat.worlds": "^3.0.0"
-      }
-    },
     "com.mimylab.dynamicdragondrivesystem": {
       "version": "1.0.5",
       "dependencies": {
@@ -67,6 +63,19 @@
     "net.narazaka.vrchat.tmp-fallback-fonts-jp": {
       "version": "1.0.2",
       "dependencies": {}
+    },
+    "net.ureishi.qvpen": {
+      "version": "3.3.8",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.5.0"
+      }
+    },
+    "com.mimylab.penoptimizationutility": {
+      "version": "1.0.4",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.4.2",
+        "net.ureishi.qvpen": "^3.2.6"
+      }
     }
   }
 }

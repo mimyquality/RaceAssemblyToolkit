@@ -12,6 +12,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.mimylab.penoptimizationutility": {
+      "version": "file:com.mimylab.penoptimizationutility",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.mimylab.raceassemblytoolkit": {
       "version": "file:com.mimylab.raceassemblytoolkit",
       "depth": 0,
@@ -241,14 +247,14 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "net.kaikoga.pen": {
-      "version": "file:net.kaikoga.pen",
+    "net.narazaka.vrchat.tmp-fallback-fonts-jp": {
+      "version": "file:net.narazaka.vrchat.tmp-fallback-fonts-jp",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
     },
-    "net.narazaka.vrchat.tmp-fallback-fonts-jp": {
-      "version": "file:net.narazaka.vrchat.tmp-fallback-fonts-jp",
+    "net.ureishi.qvpen": {
+      "version": "file:net.ureishi.qvpen",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

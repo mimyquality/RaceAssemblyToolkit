@@ -47,6 +47,20 @@ namespace MimyLab.RaceAssemblyToolkit
         internal void ResetPlates()
         {
             Initialize();
+
+            _plates = new RaceRankingPlate[0];
+            _runners = new RaceRunner[0];
+            _records = new TimeSpan[0];
+            _latestSections = new int[0];
+            _ranking = new int[0];
+
+            foreach (Transform child in _plateParent)
+            {
+                if (child != _plateTemplate.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
         }
 
         internal void AddPlates(RaceRunner[] runners)
@@ -62,7 +76,7 @@ namespace MimyLab.RaceAssemblyToolkit
             var tmpRecords = new TimeSpan[platesEnd];
             var tmpLatestSections = new int[platesEnd];
             var tmpRanking = new int[platesEnd];
-            
+
             Array.Copy(_plates, tmpPlates, platesCount);
             Array.Copy(_runners, tmpRunners, platesCount);
             Array.Copy(_records, tmpRecords, platesCount);
@@ -82,6 +96,8 @@ namespace MimyLab.RaceAssemblyToolkit
             _records = tmpRecords;
             _latestSections = tmpLatestSections;
             _ranking = tmpRanking;
+
+            InsertSortByRecord();
 
             for (int i = platesCount; i < platesEnd; i++)
             {
@@ -158,9 +174,47 @@ namespace MimyLab.RaceAssemblyToolkit
             plate.LapTime = runner.LatestLapTime;
         }
 
-        private void SorByRunnerTime()
+        private void InsertSortByRecord()
         {
+            if (_plates.Length < 2) { return; }
 
+            var tmpIndex = new int[_plates.Length];
+            for (int i = 1; i < _plates.Length; i++)
+            {
+                tmpIndex[i] = i;
+                for (int j = i; j > 0; j--)
+                {
+                    if (_latestSections[tmpIndex[j - 1]] < _latestSections[i]) { continue; }
+
+                    if (_latestSections[tmpIndex[j - 1]] == _latestSections[i] &&
+                       _records[tmpIndex[j - 1]] > _records[i])
+                    {
+                        continue;
+                    }
+
+                    Array.Copy(tmpIndex, j, tmpIndex, j + 1, i - j);
+                    tmpIndex[j] = i;
+                    break;
+                }
+            }
+
+            var tmpPlates = new RaceRankingPlate[_plates.Length];
+            var tmpRunners = new RaceRunner[_plates.Length];
+            var tmpRecords = new TimeSpan[_plates.Length];
+            var tmpLatestSections = new int[_plates.Length];
+            for (int i = 0; i < _plates.Length; i++)
+            {
+                tmpPlates[i] = _plates[tmpIndex[i]];
+                tmpRunners[i] = _runners[tmpIndex[i]];
+                tmpRecords[i] = _records[tmpIndex[i]];
+                tmpLatestSections[i] = _latestSections[tmpIndex[i]];
+                _ranking[i] = (i > 0 && tmpRecords[i - 1] == tmpRecords[i]) ? _ranking[i - 1] : i + 1;
+
+            }
+            tmpPlates.CopyTo(_plates, 0);
+            tmpRunners.CopyTo(_runners, 0);
+            tmpRecords.CopyTo(_records, 0);
+            tmpLatestSections.CopyTo(_latestSections, 0);
         }
 
         private void MoveUpPlate(RaceRankingPlate plate)
