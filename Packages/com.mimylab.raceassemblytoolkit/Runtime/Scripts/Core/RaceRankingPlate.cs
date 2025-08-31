@@ -7,10 +7,10 @@ https://opensource.org/license/mit
 namespace MimyLab.RaceAssemblyToolkit
 {
     using System;
+    using TMPro;
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using TMPro;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Ranking Plate")]
@@ -36,7 +36,11 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private TMP_Text _lapTimeText;
         [SerializeField]
+        private TMP_Text _goalTimeText;
+        [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
+        [SerializeField]
+        private TMP_Text _rankingText;
 
         private CourseDescriptor _course;
         public CourseDescriptor Course
@@ -134,6 +138,28 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 _lapTime = value;
                 if (_lapTimeText) { _lapTimeText.text = _lapTime.ToString(_timeFormat); }
+            }
+        }
+
+        private TimeSpan _goalTime;
+        public TimeSpan GoalTime
+        {
+            get => _goalTime;
+            set
+            {
+                _goalTime = value;
+                if (_goalTimeText) { _goalTimeText.text = _goalTime.ToString(_timeFormat); }
+            }
+        }
+
+        private int _ranking;
+        public int Ranking
+        {
+            get => _ranking;
+            set
+            {
+                _ranking = value;
+                if (_rankingText) { _rankingText.text = _ranking.ToString(); }
             }
         }
     }

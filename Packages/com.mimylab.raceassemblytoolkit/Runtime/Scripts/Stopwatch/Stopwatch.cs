@@ -11,7 +11,7 @@ namespace MimyLab.RaceAssemblyToolkit
     using UnityEngine;
 
     [Icon(ComponentIconPath.Stopwatch)]
-    [AddComponentMenu("Race Assembly Toolkit/Core/Stopwatch")]
+    [AddComponentMenu("Race Assembly Toolkit/Stopwatch/Stopwatch")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class Stopwatch : UdonSharpBehaviour
     {

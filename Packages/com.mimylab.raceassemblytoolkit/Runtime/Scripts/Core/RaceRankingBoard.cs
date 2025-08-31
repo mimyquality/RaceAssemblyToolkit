@@ -39,10 +39,6 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _initialized = true;
         }
-        private void Start()
-        {
-            Initialize();
-        }
 
         internal void ResetPlates()
         {
@@ -56,10 +52,9 @@ namespace MimyLab.RaceAssemblyToolkit
 
             foreach (Transform child in _plateParent)
             {
-                if (child != _plateTemplate.transform)
-                {
-                    Destroy(child.gameObject);
-                }
+                if (child == _plateTemplate.transform) { continue; }
+
+                Destroy(child.gameObject);
             }
         }
 
@@ -105,12 +100,12 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        internal void AddPlate(RaceRunner runner)
+        internal RaceRankingPlate AddPlate(RaceRunner runner)
         {
             Initialize();
 
-            if (!runner) { return; }
-            if (Array.IndexOf(_runners, runner) > -1) { return; }
+            if (!runner) { return null; }
+            if (Array.IndexOf(_runners, runner) > -1) { return null; }
 
             var plateObject = Instantiate(_plateTemplate.gameObject, _plateParent);
             var plate = plateObject.GetComponent<RaceRankingPlate>();
@@ -132,6 +127,8 @@ namespace MimyLab.RaceAssemblyToolkit
             plate.SectionTime = runner.LatestSectionTime;
             plate.SplitTime = runner.LatestSplitTime;
             plate.LapTime = runner.LatestLapTime;
+
+            return plate;
         }
 
         internal void RemovePlate(RaceRunner runner)
@@ -166,12 +163,16 @@ namespace MimyLab.RaceAssemblyToolkit
             if (index < 0) { return; }
 
             var plate = _plates[index];
+            plate.Course = runner.EntriedCourse;
             plate.Driver = runner.GetDriver();
+            plate.Runner = runner;
             plate.Section = runner.LatestSection;
             plate.Lap = runner.LatestLap;
             plate.SectionTime = runner.LatestSectionTime;
             plate.SplitTime = runner.LatestSplitTime;
             plate.LapTime = runner.LatestLapTime;
+            plate.GoalTime = runner.GoalTime;
+            plate.Ranking = _ranking[index];
         }
 
         private void InsertSortByRecord()
@@ -217,10 +218,8 @@ namespace MimyLab.RaceAssemblyToolkit
             tmpLatestSections.CopyTo(_latestSections, 0);
         }
 
-        private void MoveUpPlate(RaceRankingPlate plate)
+        internal void InsertSortByRecord(RaceRankingPlate plate)
         {
-            Initialize();
-
             if (!plate) { return; }
 
             var index = Array.IndexOf(_plates, plate);

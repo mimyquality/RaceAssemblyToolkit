@@ -36,17 +36,19 @@ namespace MimyLab.RaceAssemblyToolkit
         internal PersonalRecord personalRecord;
 
         [UdonSynced]
-        int sync_numberOfLaps;
+        private int sync_numberOfLaps;
         [UdonSynced]
-        int sync_latestSection;
+        private int sync_latestSection;
         [UdonSynced]
-        int sync_latestLap;
+        private int sync_latestLap;
         [UdonSynced]
-        long sync_latestSectionTime;
+        private long sync_latestSectionTime;
         [UdonSynced]
-        long sync_latestSplitTime;
+        private long sync_latestSplitTime;
         [UdonSynced]
-        long sync_latestLapTime;
+        private long sync_latestLapTime;
+        [UdonSynced]
+        private bool sync_isGoal;
 
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
@@ -58,6 +60,7 @@ namespace MimyLab.RaceAssemblyToolkit
         private TimeSpan _latestSectionTime;
         private TimeSpan _latestSplitTime;
         private TimeSpan _latestLapTime;
+        private bool _isGoal;
 
         public CourseDescriptor EntriedCourse { get => _entriedCourse; }
         public int NumberOfLaps { get => _entriedNumberOfLaps; }
@@ -66,6 +69,7 @@ namespace MimyLab.RaceAssemblyToolkit
         public TimeSpan LatestSectionTime { get => _latestSectionTime; }
         public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan LatestLapTime { get => _latestLapTime; }
+        public TimeSpan GoalTime { get => _isGoal ? _latestSplitTime : TimeSpan.Zero; }
 
         public override void OnPreSerialization()
         {
@@ -75,6 +79,7 @@ namespace MimyLab.RaceAssemblyToolkit
             sync_latestSectionTime = _latestSectionTime.Ticks;
             sync_latestSplitTime = _latestSplitTime.Ticks;
             sync_latestLapTime = _latestLapTime.Ticks;
+            sync_isGoal = _isGoal;
         }
 
         public override void OnDeserialization()
@@ -85,6 +90,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _latestSectionTime = TimeSpan.FromTicks(sync_latestSectionTime);
             _latestSplitTime = TimeSpan.FromTicks(sync_latestSplitTime);
             _latestLapTime = TimeSpan.FromTicks(sync_latestLapTime);
+            _isGoal = sync_isGoal;
         }
 
         public VRCPlayerApi GetDriver()
@@ -122,6 +128,11 @@ namespace MimyLab.RaceAssemblyToolkit
 
             var section = lap * _entriedCheckpoints.Length;
             return _stopwatch.GetSplitTime(section);
+        }
+
+        public TimeSpan _GetTotalTime()
+        {
+            return _stopwatch.GetTotalTime();
         }
 
         public TimeSpan _GetCurrentTime()
@@ -229,6 +240,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _latestSectionTime = _GetSectionTime(_latestSection);
             _latestSplitTime = _GetSplitTime(_latestSection);
             _latestLapTime = _GetLapTime(_latestLap);
+            _isGoal = false;
 
             RequestSerialization();
         }
@@ -242,6 +254,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _latestSectionTime = _GetSectionTime(_latestSection);
             _latestSplitTime = _GetSplitTime(_latestSection);
             _latestLapTime = _GetLapTime(_latestLap);
+            _isGoal = false;
 
             RequestSerialization();
 
@@ -274,6 +287,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _nextCheckpoint = null;
 
             _stopwatch.CountStop(triggerClock);
+            _isGoal = true;
 
             if (_speaker && _soundGoal) { _speaker.PlayOneShot(_soundGoal); }
         }

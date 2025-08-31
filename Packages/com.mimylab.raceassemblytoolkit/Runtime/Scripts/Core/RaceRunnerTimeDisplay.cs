@@ -7,10 +7,10 @@ https://opensource.org/license/mit
 namespace MimyLab.RaceAssemblyToolkit
 {
     using System;
+    using TMPro;
     using UdonSharp;
     using UnityEngine;
     using VRC.SDKBase;
-    using TMPro;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race RunnerTime Display")]
