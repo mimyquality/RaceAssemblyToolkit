@@ -18,8 +18,6 @@ namespace MimyLab.RaceAssemblyToolkit
     public class StopwatchDisplay : UdonSharpBehaviour
     {
         [SerializeField]
-        private TMP_Text _maxLapsText;
-        [SerializeField]
         private TMP_Text _lapText;
         [SerializeField]
         private TMP_Text _lapTimeText;
@@ -36,8 +34,8 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _maxLaps;
             set
             {
-                if (_maxLapsText) { _maxLapsText.text = value.ToString("D2"); }
                 _maxLaps = value;
+                SetLapText();
             }
         }
 
@@ -47,8 +45,16 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _lap;
             set
             {
-                if (_lapText) { _lapText.text = value.ToString("D2"); }
                 _lap = value;
+                SetLapText();
+            }
+        }
+
+        private void SetLapText()
+        {
+            if (_lapText)
+            {
+                _lapText.text = $"{_lap:D2}/{_maxLaps:D2}";
             }
         }
 
@@ -58,8 +64,8 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _lapTime;
             set
             {
-                if (_lapTimeText) { _lapTimeText.text = value.ToString(_timeFormat); }
                 _lapTime = value;
+                if (_lapTimeText) { _lapTimeText.text = value.ToString(_timeFormat); }
             }
         }
 
@@ -69,8 +75,8 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _splitTime;
             set
             {
-                if (_splitTimeText) { _splitTimeText.text = value.ToString(_timeFormat); }
                 _splitTime = value;
+                if (_splitTimeText) { _splitTimeText.text = value.ToString(_timeFormat); }
             }
         }
 
@@ -80,8 +86,8 @@ namespace MimyLab.RaceAssemblyToolkit
             get => _totalTime;
             set
             {
-                if (_totalTimeText) { _totalTimeText.text = value.ToString(_timeFormat); }
                 _totalTime = value;
+                if (_totalTimeText) { _totalTimeText.text = value.ToString(_timeFormat); }
             }
         }
     }

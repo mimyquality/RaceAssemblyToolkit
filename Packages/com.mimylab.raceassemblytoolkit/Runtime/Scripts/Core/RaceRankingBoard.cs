@@ -172,7 +172,7 @@ namespace MimyLab.RaceAssemblyToolkit
             plate.SplitTime = runner.LatestSplitTime;
             plate.LapTime = runner.LatestLapTime;
             plate.GoalTime = runner.GoalTime;
-            plate.Ranking = _ranking[index];
+            plate.Rank = _ranking[index];
         }
 
         private void InsertSortByRecord()

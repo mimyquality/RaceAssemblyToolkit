@@ -22,6 +22,8 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private TMP_Text _numberOfLapsText;
         [SerializeField]
+        private TMP_Text _rankText;
+        [SerializeField]
         private TMP_Text _driverNameText;
         [SerializeField]
         private TMP_Text _runnerVarietyText;
@@ -39,8 +41,6 @@ namespace MimyLab.RaceAssemblyToolkit
         private TMP_Text _goalTimeText;
         [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
-        [SerializeField]
-        private TMP_Text _rankingText;
 
         private CourseDescriptor _course;
         public CourseDescriptor Course
@@ -61,6 +61,7 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 _numberOfLaps = value;
                 if (_numberOfLapsText) { _numberOfLapsText.text = _numberOfLaps.ToString(); }
+                SetLapText();
             }
         }
 
@@ -104,7 +105,15 @@ namespace MimyLab.RaceAssemblyToolkit
             set
             {
                 _lap = value;
-                if (_lapText) { _lapText.text = _lap.ToString(); }
+                SetLapText();
+            }
+        }
+
+        private void SetLapText()
+        {
+            if (_lapText)
+            {
+                _lapText.text = $"{_lap}/{_numberOfLaps}";
             }
         }
 
@@ -152,14 +161,14 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private int _ranking;
-        public int Ranking
+        private int _rank;
+        public int Rank
         {
-            get => _ranking;
+            get => _rank;
             set
             {
-                _ranking = value;
-                if (_rankingText) { _rankingText.text = _ranking.ToString(); }
+                _rank = value;
+                if (_rankText) { _rankText.text = _rank.ToString(); }
             }
         }
     }
