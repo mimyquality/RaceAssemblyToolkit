@@ -15,44 +15,28 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceDriver : UdonSharpBehaviour
     {
-        public RaceRunner targetRunner;
-
-        private bool _initialized = false;
-        private void Initialize()
-        {
-            if (_initialized) { return; }
-
-            if (!targetRunner) { targetRunner = GetComponentInChildren<RaceRunner>(true); }
-
-            _initialized = true;
-        }
+        internal RaceRunner raceRunner;
 
         private void OnEnable()
         {
-            Initialize();
-
             _SetDriver();
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
         {
-            Initialize();
-
             _SetDriver();
         }
 
         public override void OnMasterTransferred(VRCPlayerApi newMaster)
         {
-            Initialize();
-
             _SetDriver();
         }
 
         public void _SetDriver()
         {
-            if (targetRunner)
+            if (raceRunner)
             {
-                targetRunner.SetDriver(Networking.GetOwner(this.gameObject));
+                raceRunner.SetDriver(Networking.GetOwner(this.gameObject));
             }
         }
     }

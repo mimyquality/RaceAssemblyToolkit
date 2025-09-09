@@ -13,8 +13,8 @@ namespace MimyLab.RaceAssemblyToolkit
     using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
-    [AddComponentMenu("Race Assembly Toolkit/Core/Player Record")]
-    [RequireComponent(typeof(VRCPlayerObject), typeof(VRCEnablePersistence))]
+    [AddComponentMenu("Race Assembly Toolkit/Core/Personal Record")]
+    [RequireComponent(typeof(VRCEnablePersistence))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class PersonalRecord : UdonSharpBehaviour
     {
@@ -22,7 +22,8 @@ namespace MimyLab.RaceAssemblyToolkit
         internal CourseDescriptor course;
 
         internal RaceRunner[] entryRunners = new RaceRunner[0];
-        internal RaceRunner[] entryRunnersAs = new RaceRunner[0];
+        internal RaceRunnerAsPlayer entryRunnerAsPlayer;
+        internal RaceRunnerAsDrone entryRunnerAsDrone;
 
         private TimeSpan _bestRecordTime;
         private string _bestRecordRunnerVariety = "";
@@ -55,7 +56,8 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (!Networking.IsOwner(this.gameObject)) { return false; }
 
-            var index = Array.IndexOf(entryRunnersAs, runner);
+            // RaceRunnerAs系の処理にしたい
+            var index = -1;
             if (index > -1)
             {
                 index = entryRunners.Length + index;

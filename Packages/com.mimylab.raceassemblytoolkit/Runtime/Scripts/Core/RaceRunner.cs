@@ -19,6 +19,8 @@ namespace MimyLab.RaceAssemblyToolkit
         [Header("Require References")]
         [SerializeField]
         private Stopwatch _stopwatch;
+        [SerializeField]
+        protected RaceDriver _raceDriver;
 
         [Header("Base Settings")]
         public string variety = "";
@@ -33,27 +35,11 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        internal PersonalRecord personalRecord;
-
-        [UdonSynced]
-        private int sync_numberOfLaps;
-        [UdonSynced]
-        private int sync_latestSection;
-        [UdonSynced]
-        private int sync_latestLap;
-        [UdonSynced]
-        private long sync_latestSectionTime;
-        [UdonSynced]
-        private long sync_latestSplitTime;
-        [UdonSynced]
-        private long sync_latestLapTime;
-        [UdonSynced]
-        private bool sync_isGoal;
-
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
         private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private int _entriedNumberOfLaps;
+        private IRaceEventReceiver[] _raceEventReceivers = new IRaceEventReceiver[0];
         private Checkpoint _nextCheckpoint;
         private int _latestSection;
         private int _latestLap;
@@ -61,6 +47,8 @@ namespace MimyLab.RaceAssemblyToolkit
         private TimeSpan _latestSplitTime;
         private TimeSpan _latestLapTime;
         private bool _isGoal;
+        private CourseRecord _courseRecord;
+        private PersonalRecord _personalRecord;
 
         public CourseDescriptor EntriedCourse { get => _entriedCourse; }
         public int NumberOfLaps { get => _entriedNumberOfLaps; }
@@ -71,26 +59,17 @@ namespace MimyLab.RaceAssemblyToolkit
         public TimeSpan LatestLapTime { get => _latestLapTime; }
         public TimeSpan GoalTime { get => _isGoal ? _latestSplitTime : TimeSpan.Zero; }
 
-        public override void OnPreSerialization()
+        private void Start()
         {
-            sync_numberOfLaps = _entriedNumberOfLaps;
-            sync_latestSection = _latestSection;
-            sync_latestLap = _latestLap;
-            sync_latestSectionTime = _latestSectionTime.Ticks;
-            sync_latestSplitTime = _latestSplitTime.Ticks;
-            sync_latestLapTime = _latestLapTime.Ticks;
-            sync_isGoal = _isGoal;
-        }
-
-        public override void OnDeserialization()
-        {
-            _entriedNumberOfLaps = sync_numberOfLaps;
-            _latestSection = sync_latestSection;
-            _latestLap = sync_latestLap;
-            _latestSectionTime = TimeSpan.FromTicks(sync_latestSectionTime);
-            _latestSplitTime = TimeSpan.FromTicks(sync_latestSplitTime);
-            _latestLapTime = TimeSpan.FromTicks(sync_latestLapTime);
-            _isGoal = sync_isGoal;
+            if (_raceDriver)
+            {
+                _raceDriver.raceRunner = this;
+                _raceDriver._SetDriver();
+            }
+            else
+            {
+                Debug.LogError($"Reference Exception: RaceDriver is not assigned in {this.name}.");
+            }
         }
 
         public VRCPlayerApi GetDriver()
@@ -182,6 +161,7 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 CourseEntry(course);
                 CountStart(triggerClock);
+
                 return;
             }
         }
@@ -194,7 +174,7 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 _driver = driver;
 
-                if (driver.isLocal && driver != Networking.GetOwner(this.gameObject))
+                if (driver.isLocal && !driver.IsOwner(this.gameObject))
                 {
                     Networking.SetOwner(driver, this.gameObject);
                 }
@@ -208,7 +188,9 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = course;
             _entriedCheckpoints = course.checkpoints;
             _entriedNumberOfLaps = course.numberOfLaps;
-            personalRecord = course.localPersonalRecord;
+            _raceEventReceivers = course.recordViewers;
+            _courseRecord = course.localCourseRecord;
+            _personalRecord = course.localPersonalRecord;
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
 
             var sectionCount = _entriedNumberOfLaps > 0 ? _entriedNumberOfLaps * _entriedCheckpoints.Length : _entriedCheckpoints.Length - 1;
@@ -230,7 +212,8 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = null;
             _entriedCheckpoints = new Checkpoint[0];
             _entriedNumberOfLaps = 0;
-            personalRecord = null;
+            _raceEventReceivers = new IRaceEventReceiver[0];
+            _personalRecord = null;
             _nextCheckpoint = null;
 
             _stopwatch.CountReset(0);

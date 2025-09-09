@@ -17,7 +17,7 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         [Header("Course Settings")]
         public string courseName = "";
-        
+
         [SerializeField]
         internal int revision = 1;
         [SerializeField]
@@ -37,6 +37,11 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private RaceRunnerAsDrone _runnerAsDrone;
 
+        [Header("Record Viewers")]
+        [SerializeField]
+        internal IRaceEventReceiver[] recordViewers = new IRaceEventReceiver[0];
+
+        internal CourseRecord localCourseRecord;
         internal PersonalRecord localPersonalRecord;
 
         private bool _initialized = false;
@@ -52,11 +57,36 @@ namespace MimyLab.RaceAssemblyToolkit
                 checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
             }
 
+            for (int i = 0; i < recordViewers.Length; i++)
+            {
+
+            }
+
             _initialized = true;
         }
         private void Start()
         {
             Initialize();
+        }
+
+        internal void SetLocalCourseRecord(CourseRecord courseRecord)
+        {
+            if (!Networking.IsOwner(courseRecord.gameObject)) { return; }
+
+            localCourseRecord = courseRecord;
+            localCourseRecord.participateRunners = _runners;
+            localCourseRecord.participateRunnerAsPlayer = _runnerAsPlayer;
+            localCourseRecord.participateRunnerAsDrone = _runnerAsDrone;
+        }
+
+        internal void SetLocalPersonalRecord(PersonalRecord personalRecord)
+        {
+            if (!Networking.IsOwner(personalRecord.gameObject)) { return; }
+
+            localPersonalRecord = personalRecord;
+            localPersonalRecord.entryRunners = _runners;
+            localPersonalRecord.entryRunnerAsPlayer = _runnerAsPlayer;
+            localPersonalRecord.entryRunnerAsDrone = _runnerAsDrone;
         }
     }
 }

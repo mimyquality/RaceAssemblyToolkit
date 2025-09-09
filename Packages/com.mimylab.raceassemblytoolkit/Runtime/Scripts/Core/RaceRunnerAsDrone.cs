@@ -6,9 +6,9 @@ https://opensource.org/license/mit
 
 namespace MimyLab.RaceAssemblyToolkit
 {
-    using UdonSharp;
+    //using UdonSharp;
     using UnityEngine;
-    using VRC.SDKBase;
+    //using VRC.SDKBase;
     using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
@@ -18,8 +18,8 @@ namespace MimyLab.RaceAssemblyToolkit
     {
         private void Reset()
         {
-            var raceDriver = GetComponent<RaceDriver>();
-            raceDriver.targetRunner = this;
+            _raceDriver = GetComponent<RaceDriver>();
+            _raceDriver.raceRunner = this;
 
             variety = "Drone";
         }

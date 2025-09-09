@@ -39,6 +39,8 @@ namespace MimyLab.RaceAssemblyToolkit
         private TMP_Text _lapTimeText;
         [SerializeField]
         private TMP_Text _goalTimeText;
+        
+        [Space]
         [SerializeField]
         private string _timeFormat = "hh\\:mm\\'ss\\\"fff";
 
