@@ -40,10 +40,7 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (_initialized) { return; }
 
-            if (Networking.IsOwner(this.gameObject))
-            {
-                course.localPersonalRecord = this;
-            }
+
 
             _initialized = true;
         }

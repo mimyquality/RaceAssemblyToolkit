@@ -34,9 +34,9 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private TMP_Text _sectionTimeText;
         [SerializeField]
-        private TMP_Text _splitTimeText;
-        [SerializeField]
         private TMP_Text _lapTimeText;
+        [SerializeField]
+        private TMP_Text _splitTimeText;
         [SerializeField]
         private TMP_Text _goalTimeText;
         
@@ -130,17 +130,6 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private TimeSpan _splitTime;
-        public TimeSpan SplitTime
-        {
-            get => _splitTime;
-            set
-            {
-                _splitTime = value;
-                if (_splitTimeText) { _splitTimeText.text = _splitTime.ToString(_timeFormat); }
-            }
-        }
-
         private TimeSpan _lapTime;
         public TimeSpan LapTime
         {
@@ -149,6 +138,17 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 _lapTime = value;
                 if (_lapTimeText) { _lapTimeText.text = _lapTime.ToString(_timeFormat); }
+            }
+        }
+
+        private TimeSpan _splitTime;
+        public TimeSpan SplitTime
+        {
+            get => _splitTime;
+            set
+            {
+                _splitTime = value;
+                if (_splitTimeText) { _splitTimeText.text = _splitTime.ToString(_timeFormat); }
             }
         }
 

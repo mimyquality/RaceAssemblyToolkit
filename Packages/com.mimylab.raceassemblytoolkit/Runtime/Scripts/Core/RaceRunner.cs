@@ -13,7 +13,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner")]
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunner : UdonSharpBehaviour
     {
         [Header("Require References")]
@@ -37,8 +37,8 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
-        private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private int _entriedNumberOfLaps;
+        private Checkpoint[] _entriedCheckpoints = new Checkpoint[0];
         private IRaceEventReceiver[] _raceEventReceivers = new IRaceEventReceiver[0];
         private Checkpoint _nextCheckpoint;
         private int _latestSection;
@@ -55,8 +55,8 @@ namespace MimyLab.RaceAssemblyToolkit
         public int LatestSection { get => _latestSection; }
         public int LatestLap { get => _entriedNumberOfLaps > 0 ? _latestLap : _latestSection; }
         public TimeSpan LatestSectionTime { get => _latestSectionTime; }
-        public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan LatestLapTime { get => _latestLapTime; }
+        public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan GoalTime { get => _isGoal ? _latestSplitTime : TimeSpan.Zero; }
 
         private void Start()
@@ -186,9 +186,8 @@ namespace MimyLab.RaceAssemblyToolkit
         private void CourseEntry(CourseDescriptor course)
         {
             _entriedCourse = course;
-            _entriedCheckpoints = course.checkpoints;
             _entriedNumberOfLaps = course.numberOfLaps;
-            _raceEventReceivers = course.recordViewers;
+            _entriedCheckpoints = course.checkpoints;
             _courseRecord = course.localCourseRecord;
             _personalRecord = course.localPersonalRecord;
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
@@ -210,9 +209,9 @@ namespace MimyLab.RaceAssemblyToolkit
         private void CountReset()
         {
             _entriedCourse = null;
-            _entriedCheckpoints = new Checkpoint[0];
             _entriedNumberOfLaps = 0;
-            _raceEventReceivers = new IRaceEventReceiver[0];
+            _entriedCheckpoints = new Checkpoint[0];
+            _courseRecord = null;
             _personalRecord = null;
             _nextCheckpoint = null;
 

@@ -83,7 +83,7 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 8422862863739417377}
   _stopwatch: {fileID: 3122745719526121531}
-  raceDriver: {fileID: 3990837646235356263}
+  _raceDriver: {fileID: 3990837646235356263}
   variety: 
   _speaker: {fileID: 0}
   _soundStart: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
-  _syncMethod: 3
+  _syncMethod: 1
   serializedProgramAsset: {fileID: 11400000, guid: 9204f27c9823a6e43a7c8874f8e1ad13,
     type: 2}
   programSource: {fileID: 11400000, guid: 7c5345bbdfb76c044a0b9e7e8d636671, type: 2}

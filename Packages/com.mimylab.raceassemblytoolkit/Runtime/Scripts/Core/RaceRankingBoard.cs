@@ -143,8 +143,8 @@ namespace MimyLab.RaceAssemblyToolkit
             plate.Section = runner.LatestSection;
             plate.Lap = runner.LatestLap;
             plate.SectionTime = runner.LatestSectionTime;
-            plate.SplitTime = runner.LatestSplitTime;
             plate.LapTime = runner.LatestLapTime;
+            plate.SplitTime = runner.LatestSplitTime;
             plate.GoalTime = runner.GoalTime;
             plate.Rank = _ranking[index];
         }

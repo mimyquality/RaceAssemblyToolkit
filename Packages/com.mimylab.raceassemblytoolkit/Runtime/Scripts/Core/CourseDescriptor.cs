@@ -24,6 +24,12 @@ namespace MimyLab.RaceAssemblyToolkit
         internal Checkpoint[] checkpoints = new Checkpoint[0];
         [SerializeField, Min(0)]
         internal int numberOfLaps = 0;
+
+        [Header("Records")]
+        [SerializeField]
+        private CourseRecord courseRecord;
+        [SerializeField]
+        private PersonalRecord personalRecord;
         [SerializeField, Min(0.0f), Tooltip("sec")]
         internal float recordOverCut = 0.0f;
         [SerializeField, Min(0.0f), Tooltip("sec")]
@@ -31,18 +37,26 @@ namespace MimyLab.RaceAssemblyToolkit
 
         [Header("Participate Runners")]
         [SerializeField]
-        private RaceRunner[] _runners = new RaceRunner[0];
+        internal RaceRunner[] runners = new RaceRunner[0];
         [SerializeField]
-        private RaceRunnerAsPlayer _runnerAsPlayer;
+        internal RaceRunnerAsPlayer runnerAsPlayer;
         [SerializeField]
-        private RaceRunnerAsDrone _runnerAsDrone;
-
-        [Header("Record Viewers")]
-        [SerializeField]
-        internal IRaceEventReceiver[] recordViewers = new IRaceEventReceiver[0];
+        internal RaceRunnerAsDrone runnerAsDrone;
 
         internal CourseRecord localCourseRecord;
         internal PersonalRecord localPersonalRecord;
+
+        private void OnValidate()
+        {
+            if (courseRecord.course != this)
+            {
+                courseRecord.course = this;
+            }
+            if (personalRecord.course != this)
+            {
+                personalRecord.course = this;
+            }
+        }
 
         private bool _initialized = false;
         private void Initialize()
@@ -51,15 +65,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             for (int i = 0; i < checkpoints.Length; i++)
             {
-                checkpoints[i].course = this;
-                checkpoints[i].participateRunners = _runners;
-                checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
-                checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
-            }
-
-            for (int i = 0; i < recordViewers.Length; i++)
-            {
-
+                checkpoints[i].SetCourseSettings(this);
             }
 
             _initialized = true;
@@ -67,26 +73,6 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
-        }
-
-        internal void SetLocalCourseRecord(CourseRecord courseRecord)
-        {
-            if (!Networking.IsOwner(courseRecord.gameObject)) { return; }
-
-            localCourseRecord = courseRecord;
-            localCourseRecord.participateRunners = _runners;
-            localCourseRecord.participateRunnerAsPlayer = _runnerAsPlayer;
-            localCourseRecord.participateRunnerAsDrone = _runnerAsDrone;
-        }
-
-        internal void SetLocalPersonalRecord(PersonalRecord personalRecord)
-        {
-            if (!Networking.IsOwner(personalRecord.gameObject)) { return; }
-
-            localPersonalRecord = personalRecord;
-            localPersonalRecord.entryRunners = _runners;
-            localPersonalRecord.entryRunnerAsPlayer = _runnerAsPlayer;
-            localPersonalRecord.entryRunnerAsDrone = _runnerAsDrone;
         }
     }
 }

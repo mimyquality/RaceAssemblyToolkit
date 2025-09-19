@@ -19,9 +19,10 @@ namespace MimyLab.RaceAssemblyToolkit
         private ICheckpointReaction[] _reactions = new ICheckpointReaction[0];
 
         internal CourseDescriptor course;
-        internal RaceRunner[] participateRunners = new RaceRunner[0];
-        internal RaceRunnerAsPlayer participateRunnerAsPlayer;
-        internal RaceRunnerAsDrone participateRunnerAsDrone;
+
+        private RaceRunner[] participateRunners = new RaceRunner[0];
+        private RaceRunnerAsPlayer participateRunnerAsPlayer;
+        private RaceRunnerAsDrone participateRunnerAsDrone;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -81,6 +82,14 @@ namespace MimyLab.RaceAssemblyToolkit
             }
 
             React(driver);
+        }
+
+        internal void SetCourseSettings(CourseDescriptor course)
+        {
+            this.course = course;
+            participateRunners = course.runners;
+            participateRunnerAsPlayer = course.runnerAsPlayer;
+            participateRunnerAsDrone = course.runnerAsDrone;
         }
 
         private void React(VRCPlayerApi driver)
