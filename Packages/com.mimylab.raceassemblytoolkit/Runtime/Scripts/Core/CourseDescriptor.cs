@@ -8,7 +8,7 @@ namespace MimyLab.RaceAssemblyToolkit
 {
     using UdonSharp;
     using UnityEngine;
-    using VRC.SDKBase;
+    //using VRC.SDKBase;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Course Descriptor")]
@@ -16,45 +16,63 @@ namespace MimyLab.RaceAssemblyToolkit
     public class CourseDescriptor : UdonSharpBehaviour
     {
         [Header("Course Settings")]
-        public string courseName = "";
-
         [SerializeField]
-        internal int revision = 1;
+        private string _courseName = "";
+        [SerializeField]
+        private int _revision = 1;
         [SerializeField]
         internal Checkpoint[] checkpoints = new Checkpoint[0];
         [SerializeField, Min(0)]
-        internal int numberOfLaps = 0;
+        private int _numberOfLaps = 0;
 
         [Header("Records")]
         [SerializeField]
-        private CourseRecord courseRecord;
+        private RaceRecord _raceRecord;
         [SerializeField]
-        private PersonalRecord personalRecord;
+        private CourseRecord _courseRecord;
+        [SerializeField]
+        private PersonalRecord _personalRecord;
+
         [SerializeField, Min(0.0f), Tooltip("sec")]
-        internal float recordOverCut = 0.0f;
+        private float _recordOverCut = 0.0f;
         [SerializeField, Min(0.0f), Tooltip("sec")]
-        internal float recordUnderCut = float.MaxValue;
+        private float _recordUnderCut = float.MaxValue;
 
         [Header("Participate Runners")]
         [SerializeField]
-        internal RaceRunner[] runners = new RaceRunner[0];
+        private RaceRunner[] _runners = new RaceRunner[0];
         [SerializeField]
-        internal RaceRunnerAsPlayer runnerAsPlayer;
+        private RaceRunnerAsPlayer _runnerAsPlayer;
         [SerializeField]
-        internal RaceRunnerAsDrone runnerAsDrone;
+        private RaceRunnerAsDrone _runnerAsDrone;
 
+        internal RaceRecord localRaceRecord;
         internal CourseRecord localCourseRecord;
         internal PersonalRecord localPersonalRecord;
 
+        public string CourseName { get => _courseName; }
+        public int Revision { get => _revision; }
+        public int NumberOfLaps { get => _numberOfLaps; }
+        public float RecordOverCut { get => _recordOverCut; }
+        public float RecordUnderCut { get => _recordUnderCut; }
+
         private void OnValidate()
         {
-            if (courseRecord.course != this)
+            if (_raceRecord && _raceRecord.course != this)
             {
-                courseRecord.course = this;
+                _raceRecord.course = this;
             }
-            if (personalRecord.course != this)
+            if (_raceRecord)
             {
-                personalRecord.course = this;
+                _raceRecord.participateRunners = _runners;
+            }
+            if (_courseRecord && _courseRecord.course != this)
+            {
+                _courseRecord.course = this;
+            }
+            if (_personalRecord && _personalRecord.course != this)
+            {
+                _personalRecord.course = this;
             }
         }
 
@@ -65,7 +83,10 @@ namespace MimyLab.RaceAssemblyToolkit
 
             for (int i = 0; i < checkpoints.Length; i++)
             {
-                checkpoints[i].SetCourseSettings(this);
+                checkpoints[i].course = this;
+                checkpoints[i].participateRunners = _runners;
+                checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
+                checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;

@@ -21,7 +21,14 @@ namespace MimyLab.RaceAssemblyToolkit
             _raceDriver = GetComponent<RaceDriver>();
             _raceDriver.raceRunner = this;
 
-            variety = "Drone";
+            _variety = "Drone";
+        }
+
+        protected override void UpdateRecord()
+        {
+            if (_raceRecord) { _raceRecord.OnRunnerAsDroneUpdate(this); }
+            //if (_courseRecord) { _courseRecord.OnRunnerAsDroneUpdate(this); }
+            //if (_personalRecord) { _personalRecord.OnRunnerAsDroneUpdate(this); }
         }
     }
 }

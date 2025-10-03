@@ -16,6 +16,6 @@ namespace MimyLab.RaceAssemblyToolkit
         abstract internal void AddRunners(RaceRunner[] runners);
         abstract internal void RemoveRunner(RaceRunner runner);
         abstract internal void ClearRunners();
-        abstract internal void OnRunnerUpdated(RaceRunner runner);
+        abstract internal void OnRecordUpdate(RaceRunner runner);
     }
 }

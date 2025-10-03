@@ -83,7 +83,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             for (int i = platesCount; i < platesEnd; i++)
             {
-                OnRunnerUpdated(_runners[i]);
+                OnRecordUpdate(_runners[i]);
             }
         }
 
@@ -127,7 +127,7 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        internal override void OnRunnerUpdated(RaceRunner runner)
+        internal override void OnRecordUpdate(RaceRunner runner)
         {
             Initialize();
 

@@ -85,7 +85,7 @@ namespace MimyLab.RaceAssemblyToolkit
             set
             {
                 _runner = value;
-                if (_runnerVarietyText) { _runnerVarietyText.text = _runner ? _runner.variety : ""; }
+                if (_runnerVarietyText) { _runnerVarietyText.text = _runner ? _runner.Variety : ""; }
             }
         }
 

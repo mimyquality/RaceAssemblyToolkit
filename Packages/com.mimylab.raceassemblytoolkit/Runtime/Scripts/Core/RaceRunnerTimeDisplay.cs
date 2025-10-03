@@ -170,15 +170,15 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (!_targetRunner) { return; }
 
-            RunnerVariety = _targetRunner.variety;
+            RunnerVariety = _targetRunner.Variety;
 
             var driver = _targetRunner.GetDriver();
             DriverName = Utilities.IsValid(driver) ? driver.displayName : "";
 
             var course = _targetRunner.EntriedCourse;
-            EntriedCourseName = course ? course.courseName : "";
+            EntriedCourseName = course ? course.CourseName : "";
 
-            NumberOfLaps = course.numberOfLaps;
+            NumberOfLaps = course.NumberOfLaps;
             CurrentLap = _targetRunner.LatestLap;
             CurrentTime = _targetRunner._GetCurrentTime();  // 動いてない
             LastSectionTime = _targetRunner.LatestSectionTime;
