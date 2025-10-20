@@ -13,6 +13,7 @@ namespace MimyLab.RaceAssemblyToolkit
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Course Descriptor")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [DefaultExecutionOrder(-1000)]
     public class CourseDescriptor : UdonSharpBehaviour
     {
         [Header("Course Settings")]
@@ -53,18 +54,21 @@ namespace MimyLab.RaceAssemblyToolkit
         public string CourseName { get => _courseName; }
         public int Revision { get => _revision; }
         public int NumberOfLaps { get => _numberOfLaps; }
+        public RaceRecord RaceRecord { get => _raceRecord; }
+        public CourseRecord CourseRecord { get => _courseRecord; }
+        public PersonalRecord PersonalRecord { get => _personalRecord; }
         public float RecordOverCut { get => _recordOverCut; }
         public float RecordUnderCut { get => _recordUnderCut; }
+        public RaceRunner[] Runners { get => _runners; }
+        public RaceRunnerAsPlayer RunnerAsPlayer { get => _runnerAsPlayer; }
+        public RaceRunnerAsDrone RunnerAsDrone { get => _runnerAsDrone; }
 
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
         private void OnValidate()
         {
             if (_raceRecord && _raceRecord.course != this)
             {
                 _raceRecord.course = this;
-            }
-            if (_raceRecord)
-            {
-                _raceRecord.participateRunners = _runners;
             }
             if (_courseRecord && _courseRecord.course != this)
             {
@@ -75,6 +79,7 @@ namespace MimyLab.RaceAssemblyToolkit
                 _personalRecord.course = this;
             }
         }
+#endif
 
         private bool _initialized = false;
         private void Initialize()

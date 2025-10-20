@@ -27,12 +27,8 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class RaceRecord : UdonSharpBehaviour
     {
-        private const int RunnerAsLength = 2;
-
         [SerializeField]
         internal CourseDescriptor course;
-        [SerializeField, HideInInspector]
-        internal RaceRunner[] participateRunners = new RaceRunner[0];
 
         [UdonSynced] private byte[] sync_runnerStates = new byte[0];
         [UdonSynced] private int[] sync_numberOfLaps = new int[0];
@@ -41,14 +37,23 @@ namespace MimyLab.RaceAssemblyToolkit
         [UdonSynced] private long[] sync_latestLapTimes = new long[0];
         [UdonSynced] private long[] sync_latestSplitTimes = new long[0];
 
-        [UdonSynced] private byte[] sync_runnerStatesAs = new byte[RunnerAsLength];
-        [UdonSynced] private int[] sync_numberOfLapsAs = new int[RunnerAsLength];
-        [UdonSynced] private int[] sync_latestSectionsAs = new int[RunnerAsLength];
-        [UdonSynced] private long[] sync_latestSectionTimesAs = new long[RunnerAsLength];
-        [UdonSynced] private long[] sync_latestLapTimesAs = new long[RunnerAsLength];
-        [UdonSynced] private long[] sync_latestSplitTimesAs = new long[RunnerAsLength];
+        [UdonSynced] private byte sync_runnerStateAsPlayer;
+        [UdonSynced] private int sync_numberOfLapsAsPlayer;
+        [UdonSynced] private int sync_latestSectionAsPlayer;
+        [UdonSynced] private long sync_latestSectionTimeAsPlayer;
+        [UdonSynced] private long sync_latestLapTimeAsPlayer;
+        [UdonSynced] private long sync_latestSplitTimeAsPlayer;
 
+        [UdonSynced] private byte sync_runnerStateAsDrone;
+        [UdonSynced] private int sync_numberOfLapsAsDrone;
+        [UdonSynced] private int sync_latestSectionAsDrone;
+        [UdonSynced] private long sync_latestSectionTimeAsDrone;
+        [UdonSynced] private long sync_latestLapTimeAsDrone;
+        [UdonSynced] private long sync_latestSplitTimeAsDrone;
+
+        private RaceRunner[] _participateRunners = new RaceRunner[0];
         private int _totalCheckpoints = 1;
+        private int _runnersLength = 0;
 
         private bool[] _isEntries = new bool[0];
         private bool[] _isGoals = new bool[0];
@@ -59,31 +64,43 @@ namespace MimyLab.RaceAssemblyToolkit
         private TimeSpan[] _latestLapTimes = new TimeSpan[0];
         private TimeSpan[] _latestSplitTimes = new TimeSpan[0];
 
-        private bool[] _isEntriesAs = new bool[RunnerAsLength];
-        private bool[] _isGoalsAs = new bool[RunnerAsLength];
-        private int[] _numberOfLapsAs = new int[RunnerAsLength];
-        private int[] _latestSectionsAs = new int[RunnerAsLength];
-        private int[] _latestLapsAs = new int[RunnerAsLength];
-        private TimeSpan[] _latestSectionTimesAs = new TimeSpan[RunnerAsLength];
-        private TimeSpan[] _latestLapTimesAs = new TimeSpan[RunnerAsLength];
-        private TimeSpan[] _latestSplitTimesAs = new TimeSpan[RunnerAsLength];
+        private bool _isEntryAsPlayer;
+        private bool _isGoalAsPlayer;
+        private int _numberOfLapsAsPlayer;
+        private int _latestSectionAsPlayer;
+        private int _latestLapAsPlayer;
+        private TimeSpan _latestSectionTimeAsPlayer;
+        private TimeSpan _latestLapTimeAsPlayer;
+        private TimeSpan _latestSplitTimeAsPlayer;
+
+        private bool _isEntryAsDrone;
+        private bool _isGoalAsDrone;
+        private int _numberOfLapsAsDrone;
+        private int _latestSectionAsDrone;
+        private int _latestLapAsDrone;
+        private TimeSpan _latestSectionTimeAsDrone;
+        private TimeSpan _latestLapTimeAsDrone;
+        private TimeSpan _latestSplitTimeAsDrone;
+
+        private IRecordReceiver[] _receivers = new IRecordReceiver[0];
 
         private bool _initialized = false;
         private void Initialize()
         {
             if (_initialized) { return; }
 
+            _participateRunners = course.Runners;
             _totalCheckpoints = course.checkpoints.Length;
+            _runnersLength = _participateRunners.Length;
 
-            var count = participateRunners.Length;
-            _isEntries = new bool[count];
-            _isGoals = new bool[count];
-            _numberOfLaps = new int[count];
-            _latestSections = new int[count];
-            _latestLaps = new int[count];
-            _latestSectionTimes = new TimeSpan[count];
-            _latestLapTimes = new TimeSpan[count];
-            _latestSplitTimes = new TimeSpan[count];
+            _isEntries = new bool[_runnersLength];
+            _isGoals = new bool[_runnersLength];
+            _numberOfLaps = new int[_runnersLength];
+            _latestSections = new int[_runnersLength];
+            _latestLaps = new int[_runnersLength];
+            _latestSectionTimes = new TimeSpan[_runnersLength];
+            _latestLapTimes = new TimeSpan[_runnersLength];
+            _latestSplitTimes = new TimeSpan[_runnersLength];
 
             _initialized = true;
         }
@@ -97,28 +114,19 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        private bool _syncArrayInitialized = false;
-        private void SyncArrayInitialize()
-        {
-            if (_syncArrayInitialized) { return; }
-
-            var count = participateRunners.Length;
-            sync_runnerStates = new byte[count];
-            sync_numberOfLaps = new int[count];
-            sync_latestSections = new int[count];
-            sync_latestSectionTimes = new long[count];
-            sync_latestLapTimes = new long[count];
-            sync_latestSplitTimes = new long[count];
-
-            _syncArrayInitialized = true;
-        }
         public override void OnPreSerialization()
         {
-            SyncArrayInitialize();
+            if (sync_runnerStates.Length != _runnersLength) { sync_runnerStates = new byte[_runnersLength]; }
+            if (sync_numberOfLaps.Length != _runnersLength) { sync_numberOfLaps = new int[_runnersLength]; }
+            if (sync_latestSections.Length != _runnersLength) { sync_latestSections = new int[_runnersLength]; }
+            if (sync_latestSectionTimes.Length != _runnersLength) { sync_latestSectionTimes = new long[_runnersLength]; }
+            if (sync_latestLapTimes.Length != _runnersLength) { sync_latestLapTimes = new long[_runnersLength]; }
+            if (sync_latestSplitTimes.Length != _runnersLength) { sync_latestSplitTimes = new long[_runnersLength]; }
 
-            for (int i = 0; i < participateRunners.Length; i++)
+            int runnerState;
+            for (int i = 0; i < _runnersLength; i++)
             {
-                var runnerState = 0;
+                runnerState = 0;
                 if (_isEntries[i]) { runnerState |= (int)CourseRecordRunnerStates.IsEntry; }
                 if (_isGoals[i]) { runnerState |= (int)CourseRecordRunnerStates.IsGoal; }
                 sync_runnerStates[i] = (byte)runnerState;
@@ -129,18 +137,25 @@ namespace MimyLab.RaceAssemblyToolkit
                 sync_latestSplitTimes[i] = _latestSplitTimes[i].Ticks;
             }
 
-            for (int i = 0; i < RunnerAsLength; i++)
-            {
-                var runnerStateAs = 0;
-                if (_isEntriesAs[i]) { runnerStateAs |= (int)CourseRecordRunnerStates.IsEntry; }
-                if (_isGoalsAs[i]) { runnerStateAs |= (int)CourseRecordRunnerStates.IsGoal; }
-                sync_runnerStatesAs[i] = (byte)runnerStateAs;
-                sync_numberOfLapsAs[i] = _numberOfLapsAs[i];
-                sync_latestSectionsAs[i] = _latestSectionsAs[i];
-                sync_latestSectionTimesAs[i] = _latestSectionTimesAs[i].Ticks;
-                sync_latestLapTimesAs[i] = _latestLapTimesAs[i].Ticks;
-                sync_latestSplitTimesAs[i] = _latestSplitTimesAs[i].Ticks;
-            }
+            runnerState = 0;
+            if (_isEntryAsPlayer) { runnerState |= (int)CourseRecordRunnerStates.IsEntry; }
+            if (_isGoalAsPlayer) { runnerState |= (int)CourseRecordRunnerStates.IsGoal; }
+            sync_runnerStateAsPlayer = (byte)runnerState;
+            sync_numberOfLapsAsPlayer = _numberOfLapsAsPlayer;
+            sync_latestSectionAsPlayer = _latestSectionAsPlayer;
+            sync_latestSectionTimeAsPlayer = _latestSectionTimeAsPlayer.Ticks;
+            sync_latestLapTimeAsPlayer = _latestLapTimeAsPlayer.Ticks;
+            sync_latestSplitTimeAsPlayer = _latestSplitTimeAsPlayer.Ticks;
+
+            runnerState = 0;
+            if (_isEntryAsDrone) { runnerState |= (int)CourseRecordRunnerStates.IsEntry; }
+            if (_isGoalAsDrone) { runnerState |= (int)CourseRecordRunnerStates.IsGoal; }
+            sync_runnerStateAsDrone = (byte)runnerState;
+            sync_numberOfLapsAsDrone = _numberOfLapsAsDrone;
+            sync_latestSectionAsDrone = _latestSectionAsDrone;
+            sync_latestSectionTimeAsDrone = _latestSectionTimeAsDrone.Ticks;
+            sync_latestLapTimeAsDrone = _latestLapTimeAsDrone.Ticks;
+            sync_latestSplitTimeAsDrone = _latestSplitTimeAsDrone.Ticks;
         }
 
         public override void OnDeserialization()
@@ -148,46 +163,46 @@ namespace MimyLab.RaceAssemblyToolkit
             Initialize();
 
             // RaceRunner の数が違う＝ 世界戦が変わっている(並び順も信用できないのでとりあえず破棄)
-            if (participateRunners.Length != sync_numberOfLaps.Length) { return; }
+            if (_runnersLength != sync_numberOfLaps.Length) { return; }
 
-            _numberOfLaps = sync_numberOfLaps;
-            _latestSections = sync_latestSections;
-
-            for (int i = 0; i < participateRunners.Length; i++)
+            for (int i = 0; i < _runnersLength; i++)
             {
                 _isEntries[i] = (sync_runnerStates[i] & (int)CourseRecordRunnerStates.IsEntry) > 0;
                 _isGoals[i] = (sync_runnerStates[i] & (int)CourseRecordRunnerStates.IsGoal) > 0;
-
-                _latestLaps[i] = _numberOfLaps[i] > 0 ? sync_latestSections[i] / _totalCheckpoints : sync_latestSections[i];
-
+                _numberOfLaps[i] = sync_numberOfLaps[i];
+                _latestSections[i] = sync_latestSections[i];
+                _latestLaps[i] = sync_numberOfLaps[i] > 0 ? sync_latestSections[i] / _totalCheckpoints : sync_latestSections[i];
                 _latestSectionTimes[i] = TimeSpan.FromTicks(sync_latestSectionTimes[i]);
                 _latestLapTimes[i] = TimeSpan.FromTicks(sync_latestLapTimes[i]);
                 _latestSplitTimes[i] = TimeSpan.FromTicks(sync_latestSplitTimes[i]);
             }
 
-            _numberOfLapsAs = sync_numberOfLapsAs;
-            _latestSectionsAs = sync_latestSectionsAs;
+            _isEntryAsPlayer = (sync_runnerStateAsPlayer & (int)CourseRecordRunnerStates.IsEntry) > 0;
+            _isGoalAsPlayer = (sync_runnerStateAsPlayer & (int)CourseRecordRunnerStates.IsGoal) > 0;
+            _numberOfLapsAsPlayer = sync_numberOfLapsAsPlayer;
+            _latestSectionAsPlayer = sync_latestSectionAsPlayer;
+            _latestLapAsPlayer = sync_numberOfLapsAsPlayer > 0 ? sync_latestSectionAsPlayer / _totalCheckpoints : sync_latestSectionAsPlayer;
+            _latestSectionTimeAsPlayer = TimeSpan.FromTicks(sync_latestSectionTimeAsPlayer);
+            _latestLapTimeAsPlayer = TimeSpan.FromTicks(sync_latestLapTimeAsPlayer);
+            _latestSplitTimeAsPlayer = TimeSpan.FromTicks(sync_latestSplitTimeAsPlayer);
 
-            for (int i = 0; i < RunnerAsLength; i++)
-            {
-                _isEntriesAs[i] = (sync_runnerStatesAs[i] & (int)CourseRecordRunnerStates.IsEntry) > 0;
-                _isGoalsAs[i] = (sync_runnerStatesAs[i] & (int)CourseRecordRunnerStates.IsGoal) > 0;
+            _isEntryAsDrone = (sync_runnerStateAsDrone & (int)CourseRecordRunnerStates.IsEntry) > 0;
+            _isGoalAsDrone = (sync_runnerStateAsDrone & (int)CourseRecordRunnerStates.IsGoal) > 0;
+            _numberOfLapsAsDrone = sync_numberOfLapsAsDrone;
+            _latestSectionAsDrone = sync_latestSectionAsDrone;
+            _latestLapAsDrone = sync_numberOfLapsAsDrone > 0 ? sync_latestSectionAsDrone / _totalCheckpoints : sync_latestSectionAsDrone;
+            _latestSectionTimeAsDrone = TimeSpan.FromTicks(sync_latestSectionTimeAsDrone);
+            _latestLapTimeAsDrone = TimeSpan.FromTicks(sync_latestLapTimeAsDrone);
+            _latestSplitTimeAsDrone = TimeSpan.FromTicks(sync_latestSplitTimeAsDrone);
 
-                _latestLapsAs[i] = _numberOfLapsAs[i] > 0 ? sync_latestSectionsAs[i] / _totalCheckpoints : sync_latestSectionsAs[i];
-
-                _latestSectionTimesAs[i] = TimeSpan.FromTicks(sync_latestSectionTimesAs[i]);
-                _latestLapTimesAs[i] = TimeSpan.FromTicks(sync_latestLapTimesAs[i]);
-                _latestSplitTimesAs[i] = TimeSpan.FromTicks(sync_latestSplitTimesAs[i]);
-            }
-
-            // ToDo:ランキングボードに更新通知処理
+            UpdateBoard();
         }
 
         internal void OnRunnerUpdate(RaceRunner runner)
         {
             Initialize();
 
-            var index = Array.IndexOf(participateRunners, runner);
+            var index = Array.IndexOf(_participateRunners, runner);
             if (index < 0) { return; }
 
             _isEntries[index] = runner.IsEntry;
@@ -201,43 +216,75 @@ namespace MimyLab.RaceAssemblyToolkit
 
             RequestSerialization();
 
-            // ToDo:ランキングボードに更新通知処理
+            UpdateBoard();
         }
 
         internal void OnRunnerAsPlayerUpdate(RaceRunner runner)
         {
             Initialize();
 
-            _isEntriesAs[0] = runner.IsEntry;
-            _isGoalsAs[0] = runner.IsGoal;
-            _numberOfLapsAs[0] = runner.NumberOfLaps;
-            _latestSectionsAs[0] = runner.LatestSection;
-            _latestLapsAs[0] = runner.LatestLap;
-            _latestSectionTimesAs[0] = runner.LatestSectionTime;
-            _latestLapTimesAs[0] = runner.LatestLapTime;
-            _latestSplitTimesAs[0] = runner.LatestSplitTime;
+            _isEntryAsPlayer = runner.IsEntry;
+            _isGoalAsPlayer = runner.IsGoal;
+            _numberOfLapsAsPlayer = runner.NumberOfLaps;
+            _latestSectionAsPlayer = runner.LatestSection;
+            _latestLapAsPlayer = runner.LatestLap;
+            _latestSectionTimeAsPlayer = runner.LatestSectionTime;
+            _latestLapTimeAsPlayer = runner.LatestLapTime;
+            _latestSplitTimeAsPlayer = runner.LatestSplitTime;
 
             RequestSerialization();
 
-            // ToDo:ランキングボードに更新通知処理
+            UpdateBoard();
         }
 
         internal void OnRunnerAsDroneUpdate(RaceRunner runner)
         {
             Initialize();
 
-            _isEntriesAs[1] = runner.IsEntry;
-            _isGoalsAs[1] = runner.IsGoal;
-            _numberOfLapsAs[1] = runner.NumberOfLaps;
-            _latestSectionsAs[1] = runner.LatestSection;
-            _latestLapsAs[1] = runner.LatestLap;
-            _latestSectionTimesAs[1] = runner.LatestSectionTime;
-            _latestLapTimesAs[1] = runner.LatestLapTime;
-            _latestSplitTimesAs[1] = runner.LatestSplitTime;
+            _isEntryAsDrone = runner.IsEntry;
+            _isGoalAsDrone = runner.IsGoal;
+            _numberOfLapsAsDrone = runner.NumberOfLaps;
+            _latestSectionAsDrone = runner.LatestSection;
+            _latestLapAsDrone = runner.LatestLap;
+            _latestSectionTimeAsDrone = runner.LatestSectionTime;
+            _latestLapTimeAsDrone = runner.LatestLapTime;
+            _latestSplitTimeAsDrone = runner.LatestSplitTime;
 
             RequestSerialization();
 
-            // ToDo:ランキングボードに更新通知処理
+            UpdateBoard();
+        }
+
+        internal void AddRecordReveiver(IRecordReceiver receiver)
+        {
+            if (Array.IndexOf(_receivers, receiver) > -1) { return; }
+
+            var tmp_receivers = new IRecordReceiver[_receivers.Length + 1];
+            _receivers.CopyTo(tmp_receivers, 0);
+            tmp_receivers[_receivers.Length] = receiver;
+            _receivers = tmp_receivers;
+        }
+
+        internal void RemoveRecordReveiver(IRecordReceiver receiver)
+        {
+            var index = Array.IndexOf(_receivers, receiver);
+            if (index < 0) { return; }
+
+            var tmp_receivers = new IRecordReceiver[_receivers.Length - 1];
+            Array.Copy(_receivers, 0, tmp_receivers, 0, index);
+            Array.Copy(_receivers, index + 1, tmp_receivers, index, tmp_receivers.Length - index);
+            _receivers = tmp_receivers;
+        }
+
+        private void UpdateBoard()
+        {
+            for (int i = 0; i < _receivers.Length; i++)
+            {
+                if (_receivers[i])
+                {
+                    _receivers[i].OnRaceRecordUpdate(this);
+                }
+            }
         }
     }
 }

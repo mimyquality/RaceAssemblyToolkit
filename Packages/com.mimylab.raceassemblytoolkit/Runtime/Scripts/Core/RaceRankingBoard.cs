@@ -15,12 +15,18 @@ namespace MimyLab.RaceAssemblyToolkit
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Ranking Board")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class RaceRankingBoard : IRaceEventReceiver
+    public class RaceRankingBoard : IRecordReceiver
     {
+        [SerializeField]
+        private CourseDescriptor _course;
         [SerializeField]
         private RaceRankingPlate _plateTemplate;
 
-        internal CourseDescriptor course;
+        private RaceRunner[] _participateRunners = new RaceRunner[0];
+        private RaceRunnerAsPlayer _participateRunnerAsPlayer;
+        private RaceRunnerAsDrone _participateRunnerAsDrone;
+
+        private RaceRecord _raceRecord;
 
         private Transform _plateParent;
         private RaceRankingPlate[] _plates = new RaceRankingPlate[0];
@@ -37,15 +43,81 @@ namespace MimyLab.RaceAssemblyToolkit
             _plateParent = _plateTemplate.transform.parent;
             _plateTemplate.gameObject.SetActive(false);
 
+            _raceRecord = _course.RaceRecord;
+
+            _participateRunners = _course.Runners;
+            _participateRunnerAsPlayer = _course.RunnerAsPlayer;
+            _participateRunnerAsDrone = _course.RunnerAsDrone;
+
             _initialized = true;
         }
-
-        internal override void AddRunner(RaceRunner runner)
+        private void OnEnable()
         {
-            AddRunners(new RaceRunner[1] { runner });
+            Initialize();
+
+            ClearRunners();
+            AddRunners(_participateRunners);
+
+            var players = VRCPlayerApi.GetPlayers(new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()]);
+            for (int i = 0; i < players.Length; i++)
+            {
+                SetupFromPlayerRunner(players[i]);
+            }
+
+            RefreshPlatesAll();
+            InsertSortByRecord();
         }
 
-        internal override void AddRunners(RaceRunner[] runners)
+        public override void OnPlayerRestored(VRCPlayerApi player)
+        {
+            Initialize();
+
+            SetupFromPlayerRunner(player);
+
+            RefreshPlatesAll();
+            InsertSortByRecord();
+        }
+
+        internal override void OnRaceRecordUpdate(RaceRecord record)
+        {
+            Initialize();
+
+            // record を元にプレート更新
+
+            InsertSortByRecord();
+        }
+
+        private void SetupFromPlayerRunner(VRCPlayerApi player)
+        {
+            if (!Utilities.IsValid(player)) { return; }
+
+            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsPlayer);
+            if (runnerAsPlayer)
+            {
+                AddRunner(runnerAsPlayer);
+            }
+
+            var runnerAsDrone = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsDrone);
+            if (runnerAsDrone)
+            {
+                AddRunner(runnerAsDrone);
+            }
+
+            var raceRecord = (RaceRecord)player.FindComponentInPlayerObjects(_raceRecord);
+            if (raceRecord)
+            {
+                raceRecord.AddRecordReveiver(this);
+            }
+        }
+
+        private void AddRunner(RaceRunner runner)
+        {
+            if (!runner) { return; }
+
+            AddRunners(new RaceRunner[] { runner });
+        }
+
+        private void AddRunners(RaceRunner[] runners)
         {
             Initialize();
 
@@ -78,16 +150,9 @@ namespace MimyLab.RaceAssemblyToolkit
             _records = tmpRecords;
             _latestSections = tmpLatestSections;
             _ranking = tmpRanking;
-
-            InsertSortByRecord();
-
-            for (int i = platesCount; i < platesEnd; i++)
-            {
-                OnRecordUpdate(_runners[i]);
-            }
         }
 
-        internal override void RemoveRunner(RaceRunner runner)
+        private void RemoveRunner(RaceRunner runner)
         {
             Initialize();
 
@@ -109,7 +174,7 @@ namespace MimyLab.RaceAssemblyToolkit
             Destroy(_plates[index].gameObject);
         }
 
-        internal override void ClearRunners()
+        private void ClearRunners()
         {
             Initialize();
 
@@ -127,26 +192,9 @@ namespace MimyLab.RaceAssemblyToolkit
             }
         }
 
-        internal override void OnRecordUpdate(RaceRunner runner)
+        private void RefreshPlatesAll()
         {
-            Initialize();
 
-            if (!runner) { return; }
-
-            var index = Array.IndexOf(_runners, runner);
-            if (index < 0) { return; }
-
-            var plate = _plates[index];
-            plate.Course = runner.EntriedCourse;
-            plate.Driver = runner.GetDriver();
-            plate.Runner = runner;
-            plate.Section = runner.LatestSection;
-            plate.Lap = runner.LatestLap;
-            plate.SectionTime = runner.LatestSectionTime;
-            plate.LapTime = runner.LatestLapTime;
-            plate.SplitTime = runner.LatestSplitTime;
-            plate.GoalTime = runner.GoalTime;
-            plate.Rank = _ranking[index];
         }
 
         private void InsertSortByRecord()
@@ -190,16 +238,6 @@ namespace MimyLab.RaceAssemblyToolkit
             tmpRunners.CopyTo(_runners, 0);
             tmpRecords.CopyTo(_records, 0);
             tmpLatestSections.CopyTo(_latestSections, 0);
-        }
-
-        internal void InsertSortByRecord(RaceRankingPlate plate)
-        {
-            if (!plate) { return; }
-
-            var index = Array.IndexOf(_plates, plate);
-            if (index < 0) { return; }
-
-
         }
     }
 }

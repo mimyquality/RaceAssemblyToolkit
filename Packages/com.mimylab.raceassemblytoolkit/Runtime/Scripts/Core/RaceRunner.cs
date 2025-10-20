@@ -200,8 +200,8 @@ namespace MimyLab.RaceAssemblyToolkit
         // driver.isLocal のみが呼び出す
         protected virtual void UpdateRecord()
         {
-            if (_courseRecord) { _raceRecord.OnRunnerUpdate(this); }
-            //if (_personalRecord) { _personalRecord.OnRunnerUpdate(this); }
+            if (_raceRecord) { _raceRecord.OnRunnerUpdate(this); }
+            //if (_courseRecord) {_courseRecord.OnRunnerUpdate(this); }
             //if (_personalRecord) { _personalRecord.OnRunnerUpdate(this); }
         }
 
@@ -234,6 +234,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = null;
             _entriedNumberOfLaps = 0;
             _entriedCheckpoints = new Checkpoint[0];
+            _raceRecord = null;
             _courseRecord = null;
             _personalRecord = null;
             _nextCheckpoint = null;
