@@ -56,8 +56,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5701666361047744260}
-  courseName: TestCourse
-  revision: 1
+  _courseName: 
+  _revision: 1
   checkpoints:
   - {fileID: 6052195107219104943}
   - {fileID: 3405228866204640418}
@@ -67,11 +67,13 @@ MonoBehaviour:
   - {fileID: 1578495649555283837}
   - {fileID: 1904824805770820385}
   - {fileID: 5626983975422609293}
-  numberOfLaps: 2
-  recordOverCut: 0
-  recordUnderCut: 3.4028235e+38
-  _runners:
-  - {fileID: 0}
+  _numberOfLaps: 0
+  _raceRecord: {fileID: 0}
+  _courseRecord: {fileID: 0}
+  _personalRecord: {fileID: 0}
+  _recordOverCut: 0
+  _recordUnderCut: 3.4028235e+38
+  _runners: []
   _runnerAsPlayer: {fileID: 0}
   _runnerAsDrone: {fileID: 0}
 --- !u!114 &5701666361047744260

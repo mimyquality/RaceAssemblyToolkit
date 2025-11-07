@@ -91,16 +91,22 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             if (!Utilities.IsValid(player)) { return; }
 
-            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsPlayer);
-            if (runnerAsPlayer)
+            if (_participateRunnerAsPlayer)
             {
-                AddRunner(runnerAsPlayer);
+                var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsPlayer);
+                if (runnerAsPlayer)
+                {
+                    AddRunner(runnerAsPlayer);
+                }
             }
 
-            var runnerAsDrone = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsDrone);
-            if (runnerAsDrone)
+            if (_participateRunnerAsDrone)
             {
-                AddRunner(runnerAsDrone);
+                var runnerAsDrone = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsDrone);
+                if (runnerAsDrone)
+                {
+                    AddRunner(runnerAsDrone);
+                }
             }
 
             var raceRecord = (RaceRecord)player.FindComponentInPlayerObjects(_raceRecord);

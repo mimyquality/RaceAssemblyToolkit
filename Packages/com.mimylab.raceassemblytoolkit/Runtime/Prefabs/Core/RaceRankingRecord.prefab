@@ -624,6 +624,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 8868662739671456099}
+  _course: {fileID: 0}
   _plateTemplate: {fileID: 5063108342508051535}
 --- !u!114 &8868662739671456099
 MonoBehaviour:
@@ -1871,6 +1872,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5472234990423753089, guid: 4193027e828701148afde768aafbbca0,
         type: 3}
+    - target: {fileID: 5915918423747402730, guid: 4193027e828701148afde768aafbbca0,
+        type: 3}
+      propertyPath: serializedProgramAsset
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7995846166360732229, guid: 4193027e828701148afde768aafbbca0,
         type: 3}
       propertyPath: m_Pivot.x

@@ -8,6 +8,8 @@ namespace MimyLab.RaceAssemblyToolkit
 {
     using UdonSharp;
     using UnityEngine;
+    using VRC.SDKBase;
+
     //using VRC.SDKBase;
 
     [Icon(ComponentIconPath.RAT)]
@@ -16,6 +18,8 @@ namespace MimyLab.RaceAssemblyToolkit
     [DefaultExecutionOrder(-1000)]
     public class CourseDescriptor : UdonSharpBehaviour
     {
+        private const int PlayerCacheCapacity = 90;
+
         [Header("Course Settings")]
         [SerializeField]
         private string _courseName = "";
@@ -34,6 +38,7 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private PersonalRecord _personalRecord;
 
+        [Space]
         [SerializeField, Min(0.0f), Tooltip("sec")]
         private float _recordOverCut = 0.0f;
         [SerializeField, Min(0.0f), Tooltip("sec")]
@@ -42,9 +47,10 @@ namespace MimyLab.RaceAssemblyToolkit
         [Header("Participate Runners")]
         [SerializeField]
         private RaceRunner[] _runners = new RaceRunner[0];
-        [SerializeField]
+
+        [SerializeField, HideInInspector]
         private RaceRunnerAsPlayer _runnerAsPlayer;
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private RaceRunnerAsDrone _runnerAsDrone;
 
         internal RaceRecord localRaceRecord;
@@ -63,9 +69,29 @@ namespace MimyLab.RaceAssemblyToolkit
         public RaceRunnerAsPlayer RunnerAsPlayer { get => _runnerAsPlayer; }
         public RaceRunnerAsDrone RunnerAsDrone { get => _runnerAsDrone; }
 
+        private VRCPlayerApi[] _players = new VRCPlayerApi[PlayerCacheCapacity];
+        private RaceRunner[][] _playersRunners = new RaceRunner[PlayerCacheCapacity][];
+        private RaceRunner[] _runnersEmpty = new RaceRunner[0];
+
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         private void OnValidate()
         {
+            _runnerAsPlayer = null;
+            _runnerAsDrone = null;
+            foreach (var runner in _runners)
+            {
+                var type = runner.GetType();
+                if (!_runnerAsPlayer && type.IsSubclassOf(typeof(RaceRunnerAsPlayer)))
+                {
+                    _runnerAsPlayer = (RaceRunnerAsPlayer)runner;
+                }
+                if (!_runnerAsDrone && type.IsSubclassOf(typeof(RaceRunnerAsDrone)))
+                {
+                    _runnerAsDrone = (RaceRunnerAsDrone)runner;
+                }
+                if (_runnerAsPlayer && _runnerAsDrone) { break; }
+            }
+
             if (_raceRecord && _raceRecord.course != this)
             {
                 _raceRecord.course = this;
@@ -89,9 +115,8 @@ namespace MimyLab.RaceAssemblyToolkit
             for (int i = 0; i < checkpoints.Length; i++)
             {
                 checkpoints[i].course = this;
-                checkpoints[i].participateRunners = _runners;
-                checkpoints[i].participateRunnerAsPlayer = _runnerAsPlayer;
-                checkpoints[i].participateRunnerAsDrone = _runnerAsDrone;
+                checkpoints[i].participatingRunnerAsPlayer = _runnerAsPlayer;
+                checkpoints[i].participatingRunnerAsDrone = _runnerAsDrone;
             }
 
             _initialized = true;
@@ -99,6 +124,59 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
+        }
+
+        public override void OnPlayerLeft(VRCPlayerApi player)
+        {
+            SendCustomEventDelayedFrames(nameof(_RefreshParticipatingRunners), 1);
+        }
+        public void _RefreshParticipatingRunners()
+        {
+            for (int i = 0; i < _players.Length; i++)
+            {
+                if (Utilities.IsValid(_players[i])) { continue; }
+
+                _players[i] = null;
+                _playersRunners[i] = _runnersEmpty;
+            }
+        }
+
+        public RaceRunner[] GetParticipatingRunners(VRCPlayerApi player)
+        {
+            if (!Utilities.IsValid(player)) { return _runnersEmpty; }
+
+            var index = System.Array.IndexOf(_players, player);
+            if (index < 0)
+            {
+                index = ParticipateRunners(player);
+                if (index < 0) { return _runnersEmpty; }
+            }
+
+            return _playersRunners[index];
+        }
+
+        private int ParticipateRunners(VRCPlayerApi player)
+        {
+            var result = System.Array.IndexOf(_players, null);
+
+            if (result < 0)
+            {
+                _RefreshParticipatingRunners();
+
+                result = System.Array.IndexOf(_players, null);
+                if (result < 0) { return result; }
+            }
+
+            var playerRunners = new RaceRunner[_runners.Length];
+            for (int i = 0; i < playerRunners.Length; i++)
+            {
+                playerRunners[i] = (RaceRunner)player.FindComponentInPlayerObjects(_runners[i]);
+            }
+
+            _players[result] = player;
+            _playersRunners[result] = playerRunners;
+
+            return result;
         }
     }
 }

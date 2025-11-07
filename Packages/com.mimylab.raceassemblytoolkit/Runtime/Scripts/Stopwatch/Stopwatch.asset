@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: Stopwatch
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: e67eb7fb12710c841afcdb1536e949ce,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: ca6c0aa38961f354d87b3b243c24d5a4,
     type: 2}
   udonAssembly: 
   assemblyError: 

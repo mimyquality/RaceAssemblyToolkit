@@ -9,16 +9,16 @@ namespace MimyLab.RaceAssemblyToolkit
     using System;
     using UdonSharp;
     using UnityEngine;
+    using VRC.SDK3.Components;
     using VRC.SDKBase;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner")]
+    [RequireComponent(typeof(Stopwatch))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunner : UdonSharpBehaviour
     {
         [Header("Require References")]
-        [SerializeField]
-        private Stopwatch _stopwatch;
         [SerializeField]
         protected RaceDriver _raceDriver;
 
@@ -39,6 +39,7 @@ namespace MimyLab.RaceAssemblyToolkit
         protected CourseRecord _courseRecord;
         protected PersonalRecord _personalRecord;
 
+        private Stopwatch _stopwatch;
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
         private int _entriedNumberOfLaps;
@@ -64,8 +65,20 @@ namespace MimyLab.RaceAssemblyToolkit
         public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan GoalTime { get => _isGoal ? _latestSplitTime : TimeSpan.Zero; }
 
+        private Stopwatch _Stopwatch { get => _stopwatch ? _stopwatch : GetComponent<Stopwatch>(); }
+
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+        protected virtual void Reset()
+        {
+            var playerObject = GetComponentInParent<VRCPlayerObject>();
+            if (!playerObject) { this.gameObject.AddComponent<VRCPlayerObject>(); }
+        }
+#endif
+
         private void Start()
         {
+            _stopwatch = GetComponent<Stopwatch>();
+
             if (_raceDriver)
             {
                 _raceDriver.raceRunner = this;
@@ -84,12 +97,12 @@ namespace MimyLab.RaceAssemblyToolkit
 
         public TimeSpan _GetSectionTime(int section)
         {
-            return _stopwatch.GetLapTime(section);
+            return _Stopwatch.GetLapTime(section);
         }
 
         public TimeSpan _GetSplitTime(int section)
         {
-            return _stopwatch.GetSplitTime(section);
+            return _Stopwatch.GetSplitTime(section);
         }
 
         public TimeSpan _GetLapTime(int lap)
@@ -100,7 +113,7 @@ namespace MimyLab.RaceAssemblyToolkit
             if (_entriedNumberOfLaps < 1) { return _GetSectionTime(lap); }
 
             var section = lap * _entriedCheckpoints.Length;
-            return _stopwatch.GetLapTime(section, section - _entriedCheckpoints.Length);
+            return _Stopwatch.GetLapTime(section, section - _entriedCheckpoints.Length);
         }
 
         public TimeSpan _GetSplitTimeByLap(int lap)
@@ -111,17 +124,17 @@ namespace MimyLab.RaceAssemblyToolkit
             if (_entriedNumberOfLaps < 1) { return _GetSplitTime(lap); }
 
             var section = lap * _entriedCheckpoints.Length;
-            return _stopwatch.GetSplitTime(section);
+            return _Stopwatch.GetSplitTime(section);
         }
 
         public TimeSpan _GetTotalTime()
         {
-            return _stopwatch.GetTotalTime();
+            return _Stopwatch.GetTotalTime();
         }
 
         public TimeSpan _GetCurrentTime()
         {
-            return _stopwatch.GetCurrentTime();
+            return _Stopwatch.GetCurrentTime();
         }
 
         internal void OnCheckpointPassed(Checkpoint checkpoint, double triggerClock)
@@ -186,20 +199,16 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 _driver = driver;
 
-                if (driver.isLocal && !driver.IsOwner(this.gameObject))
-                {
-                    Networking.SetOwner(driver, this.gameObject);
-                }
-
                 CountReset();
 
-                if (_driver.isLocal) { UpdateRecord(); }
+                UpdateRecord();
             }
         }
 
-        // driver.isLocal のみが呼び出す
         protected virtual void UpdateRecord()
         {
+            if (!_driver.isLocal) { return; }
+
             if (_raceRecord) { _raceRecord.OnRunnerUpdate(this); }
             //if (_courseRecord) {_courseRecord.OnRunnerUpdate(this); }
             //if (_personalRecord) { _personalRecord.OnRunnerUpdate(this); }
@@ -216,7 +225,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
 
             var sectionCount = _entriedNumberOfLaps > 0 ? _entriedNumberOfLaps * _entriedCheckpoints.Length : _entriedCheckpoints.Length - 1;
-            _stopwatch.CountReset(sectionCount);
+            _Stopwatch.CountReset(sectionCount);
 
             _isEntry = true;
         }
@@ -239,7 +248,7 @@ namespace MimyLab.RaceAssemblyToolkit
             _personalRecord = null;
             _nextCheckpoint = null;
 
-            _stopwatch.CountReset(0);
+            _Stopwatch.CountReset(0);
 
             _isEntry = false;
             _isGoal = false;
@@ -253,7 +262,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void CountStart(double triggerClock)
         {
-            _stopwatch.CountStart(triggerClock);
+            _Stopwatch.CountStart(triggerClock);
 
             _latestSection = 0;
             _latestLap = 0;
@@ -267,7 +276,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
         private void CountSection(double triggerClock)
         {
-            _stopwatch.CountLap(triggerClock);
+            _Stopwatch.CountLap(triggerClock);
 
             _latestSection++;
             _latestSectionTime = _GetSectionTime(_latestSection);
@@ -286,7 +295,7 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             _nextCheckpoint = null;
 
-            _stopwatch.CountStop(triggerClock);
+            _Stopwatch.CountStop(triggerClock);
             _isGoal = true;
 
             if (_speaker && _soundGoal) { _speaker.PlayOneShot(_soundGoal); }

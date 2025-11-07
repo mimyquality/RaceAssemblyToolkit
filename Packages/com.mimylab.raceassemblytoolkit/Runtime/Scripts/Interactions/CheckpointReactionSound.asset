@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: CheckpointReactionSound
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d6e524f73f13b164784d882ff330a071,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: a9777a5c1ef3a5e47ad06c489d69cbcf,
     type: 2}
   udonAssembly: 
   assemblyError: 

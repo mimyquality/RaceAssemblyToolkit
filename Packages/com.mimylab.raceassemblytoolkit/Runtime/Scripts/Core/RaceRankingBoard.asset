@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: RaceRankingBoard
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: f4d248071922da94e909270c8b4e3f1b,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: f635fbc6b9ad9fb479e5bf2da25e21d1,
     type: 2}
   udonAssembly: 
   assemblyError: 

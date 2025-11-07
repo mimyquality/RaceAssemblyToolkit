@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: Clockwork
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 8254893c7f874854880ddb5ea5fe02fa,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: b344d57f7c5066048aad289642ad3f72,
     type: 2}
   udonAssembly: 
   assemblyError: 

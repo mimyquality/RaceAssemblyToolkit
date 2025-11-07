@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: RaceRecord
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: ccc1fc17cda523f418371dc4a3f5f987,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 2a26d50d1217d194e8c109718faa23d7,
     type: 2}
   udonAssembly: 
   assemblyError: 

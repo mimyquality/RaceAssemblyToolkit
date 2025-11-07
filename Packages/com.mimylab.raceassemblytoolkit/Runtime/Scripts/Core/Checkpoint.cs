@@ -19,9 +19,8 @@ namespace MimyLab.RaceAssemblyToolkit
         private ICheckpointReaction[] _reactions = new ICheckpointReaction[0];
 
         internal CourseDescriptor course;
-        internal RaceRunner[] participateRunners = new RaceRunner[0];
-        internal RaceRunnerAsPlayer participateRunnerAsPlayer;
-        internal RaceRunnerAsDrone participateRunnerAsDrone;
+        internal RaceRunnerAsPlayer participatingRunnerAsPlayer;
+        internal RaceRunnerAsDrone participatingRunnerAsDrone;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -31,10 +30,12 @@ namespace MimyLab.RaceAssemblyToolkit
 
             var runner = other.GetComponent<RaceRunner>();
             if (!runner) { return; }
-            if (System.Array.IndexOf(participateRunners, runner) < 0) { return; }
 
             var driver = runner.GetDriver();
             if (!Utilities.IsValid(driver)) { return; }
+
+            var participatingRunners = course.GetParticipatingRunners(driver);
+            if (System.Array.IndexOf(participatingRunners, runner) < 0) { return; }
 
             if (driver.isLocal)
             {
@@ -48,10 +49,10 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             var triggerClock = Time.timeAsDouble;
 
-            if (!Utilities.IsValid(participateRunnerAsPlayer)) { return; }
+            if (!participatingRunnerAsPlayer) { return; }
             if (!Utilities.IsValid(player)) { return; }
 
-            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(participateRunnerAsPlayer);
+            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(participatingRunnerAsPlayer);
             if (!runnerAsPlayer) { return; }
 
             if (player.isLocal)
@@ -66,13 +67,13 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             var triggerClock = Time.timeAsDouble;
 
-            if (!Utilities.IsValid(participateRunnerAsDrone)) { return; }
+            if (!participatingRunnerAsDrone) { return; }
             if (!Utilities.IsValid(drone)) { return; }
 
             var driver = drone.GetPlayer();
             if (!Utilities.IsValid(driver)) { return; }
 
-            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(participateRunnerAsDrone);
+            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(participatingRunnerAsDrone);
             if (!runnerAsDrone) { return; }
 
             if (driver.isLocal)

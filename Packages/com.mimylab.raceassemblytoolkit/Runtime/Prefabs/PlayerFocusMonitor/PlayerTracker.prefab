@@ -139,6 +139,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6681421220150158293}
+  focusPoint: 1
 --- !u!114 &6681421220150158293
 MonoBehaviour:
   m_ObjectHideFlags: 0

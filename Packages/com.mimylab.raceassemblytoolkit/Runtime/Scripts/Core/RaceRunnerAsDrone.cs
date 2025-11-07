@@ -6,23 +6,25 @@ https://opensource.org/license/mit
 
 namespace MimyLab.RaceAssemblyToolkit
 {
-    using UdonSharp;
+    //using UdonSharp;
     using UnityEngine;
-    using VRC.SDKBase;
+    //using VRC.SDKBase;
     using VRC.SDK3.Components;
 
     [Icon(ComponentIconPath.RAT)]
     [AddComponentMenu("Race Assembly Toolkit/Core/Race Runner as Drone")]
-    [RequireComponent(typeof(VRCPlayerObject), typeof(RaceDriver))]
+    [RequireComponent(typeof(VRCPlayerObject))]
     public class RaceRunnerAsDrone : RaceRunner
     {
-        private void Reset()
+
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+        protected override void Reset()
         {
-            _raceDriver = GetComponent<RaceDriver>();
-            _raceDriver.raceRunner = this;
+            base.Reset();
 
             _variety = "Drone";
         }
+#endif
 
         protected override void UpdateRecord()
         {

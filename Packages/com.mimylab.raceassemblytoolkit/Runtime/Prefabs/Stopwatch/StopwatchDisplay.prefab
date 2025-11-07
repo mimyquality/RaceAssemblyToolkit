@@ -978,7 +978,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6045315997811249523}
-  _maxLapsText: {fileID: 0}
   _lapText: {fileID: 4945605616630118724}
   _lapTimeText: {fileID: 3343138255079683799}
   _splitTimeText: {fileID: 6771595499565327740}
