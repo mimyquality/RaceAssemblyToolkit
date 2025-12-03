@@ -53,7 +53,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 5
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -89,7 +89,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -143,8 +143,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Gain: 0
   Far: 40
-  Near: 5
-  VolumetricRadius: 40
+  Near: 0
+  VolumetricRadius: 0
   EnableSpatialization: 0
   UseAudioSourceVolumeCurve: 0
 --- !u!1001 &1018560295156710547
@@ -155,48 +155,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: _speaker
       value: 
       objectReference: {fileID: 2138973432981170366}
-    - target: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: _soundGoal
       value: 
       objectReference: {fileID: 8300000, guid: 9ddd58a7f7244ee40bdd0343165cebfd, type: 3}
-    - target: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: _soundStart
       value: 
       objectReference: {fileID: 8300000, guid: d2de955ccf6f90b4586d670a7f9d1048, type: 3}
-    - target: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: _soundCheckpoint
       value: 
       objectReference: {fileID: 8300000, guid: d2de955ccf6f90b4586d670a7f9d1048, type: 3}
-    - target: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 559629902434642745, guid: d32b4f8d483dfa844b584744fbeafa51,
+      objectReference: {fileID: 1215837236535876565, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
-    - target: {fileID: 3122745719526121531, guid: d32b4f8d483dfa844b584744fbeafa51,
-        type: 3}
-      propertyPath: _maxLaps
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3122745719526121531, guid: d32b4f8d483dfa844b584744fbeafa51,
+    - target: {fileID: 2859383129562007166, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 3122745719526121531, guid: d32b4f8d483dfa844b584744fbeafa51,
-        type: 3}
-    - target: {fileID: 3990837646235356263, guid: d32b4f8d483dfa844b584744fbeafa51,
-        type: 3}
-      propertyPath: serializationData.Prefab
-      value: 
-      objectReference: {fileID: 3990837646235356263, guid: d32b4f8d483dfa844b584744fbeafa51,
+      objectReference: {fileID: 2859383129562007166, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}
     - target: {fileID: 4361923183379247159, guid: d32b4f8d483dfa844b584744fbeafa51,
         type: 3}

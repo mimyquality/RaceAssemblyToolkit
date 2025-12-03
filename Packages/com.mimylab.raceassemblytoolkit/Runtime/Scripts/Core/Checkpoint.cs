@@ -19,13 +19,15 @@ namespace MimyLab.RaceAssemblyToolkit
         private ICheckpointReaction[] _reactions = new ICheckpointReaction[0];
 
         internal CourseDescriptor course;
-        internal RaceRunnerAsPlayer participatingRunnerAsPlayer;
-        internal RaceRunnerAsDrone participatingRunnerAsDrone;
+        
+        private RaceRunnerAsPlayer _runnerAsPlayer;
+        private RaceRunnerAsDrone _runnerAsDrone;
 
         private void OnTriggerEnter(Collider other)
         {
             var triggerClock = Time.timeAsDouble;
 
+            if (!course) { return; }
             if (!Utilities.IsValid(other)) { return; }
 
             var runner = other.GetComponent<RaceRunner>();
@@ -49,10 +51,10 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             var triggerClock = Time.timeAsDouble;
 
-            if (!participatingRunnerAsPlayer) { return; }
+            if (!_runnerAsPlayer) { return; }
             if (!Utilities.IsValid(player)) { return; }
 
-            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(participatingRunnerAsPlayer);
+            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_runnerAsPlayer);
             if (!runnerAsPlayer) { return; }
 
             if (player.isLocal)
@@ -67,13 +69,13 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             var triggerClock = Time.timeAsDouble;
 
-            if (!participatingRunnerAsDrone) { return; }
+            if (!_runnerAsDrone) { return; }
             if (!Utilities.IsValid(drone)) { return; }
 
             var driver = drone.GetPlayer();
             if (!Utilities.IsValid(driver)) { return; }
 
-            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(participatingRunnerAsDrone);
+            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(_runnerAsDrone);
             if (!runnerAsDrone) { return; }
 
             if (driver.isLocal)
@@ -82,6 +84,13 @@ namespace MimyLab.RaceAssemblyToolkit
             }
 
             React(driver);
+        }
+
+        internal void SetCourse(CourseDescriptor course)
+        {
+            this.course = course;
+            _runnerAsPlayer = course.runnerAsPlayer;
+            _runnerAsDrone = course.runnerAsDrone;
         }
 
         private void React(VRCPlayerApi driver)

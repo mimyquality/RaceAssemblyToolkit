@@ -18,10 +18,6 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class RaceRunner : UdonSharpBehaviour
     {
-        [Header("Require References")]
-        [SerializeField]
-        protected RaceDriver _raceDriver;
-
         [Header("Base Settings")]
         protected string _variety = "";
 
@@ -70,7 +66,7 @@ namespace MimyLab.RaceAssemblyToolkit
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         protected virtual void Reset()
         {
-            var playerObject = GetComponentInParent<VRCPlayerObject>();
+            var playerObject = GetComponentInParent<VRCPlayerObject>(true);
             if (!playerObject) { this.gameObject.AddComponent<VRCPlayerObject>(); }
         }
 #endif
@@ -79,14 +75,9 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             _stopwatch = GetComponent<Stopwatch>();
 
-            if (_raceDriver)
+            if (!Utilities.IsValid(_driver))
             {
-                _raceDriver.raceRunner = this;
-                _raceDriver._SetDriver();
-            }
-            else
-            {
-                Debug.LogError($"Reference Exception: RaceDriver is not assigned in {this.name}.");
+                _driver = Networking.GetOwner(this.gameObject);
             }
         }
 
@@ -175,12 +166,13 @@ namespace MimyLab.RaceAssemblyToolkit
                 return;
             }
 
+            // コース出場処理
             var course = checkpoint.course;
             if (!course) { return; }
+
             var checkpoints = course.checkpoints;
             if (checkpoints.Length < 1) { return; }
 
-            // コース出場処理
             if (checkpoint == checkpoints[0])
             {
                 CourseEntry(course);
@@ -198,14 +190,14 @@ namespace MimyLab.RaceAssemblyToolkit
             if (_driver != driver)
             {
                 _driver = driver;
-
+                this.enabled = _driver == Networking.GetOwner(this.gameObject);
                 CountReset();
 
                 UpdateRecord();
             }
         }
 
-        protected virtual void UpdateRecord()
+        private void UpdateRecord()
         {
             if (!_driver.isLocal) { return; }
 

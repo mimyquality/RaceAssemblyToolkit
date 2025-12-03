@@ -15,28 +15,46 @@ namespace MimyLab.RaceAssemblyToolkit
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
     public class RaceDriver : UdonSharpBehaviour
     {
-        internal RaceRunner raceRunner;
+        [SerializeField]
+        private RaceRunner _raceRunner;
 
         private void OnEnable()
         {
-            _SetDriver();
+            SetDriver(Networking.GetOwner(this.gameObject));
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
         {
-            _SetDriver();
+            SetDriver(player);
         }
 
         public override void OnMasterTransferred(VRCPlayerApi newMaster)
         {
-            _SetDriver();
+            if (newMaster.IsOwner(this.gameObject))
+            {
+                SetDriver(newMaster);
+            }
         }
 
-        public void _SetDriver()
+        public override void OnPlayerJoined(VRCPlayerApi player)
         {
-            if (raceRunner)
+            var runner = (RaceRunner)player.FindComponentInPlayerObjects(_raceRunner);
+            runner.SetDriver(Networking.GetOwner(this.gameObject));
+        }
+
+        private void SetDriver(VRCPlayerApi driver)
+        {
+            if (!_raceRunner) { return; }
+
+            var players = VRCPlayerApi.GetPlayers(new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()]);
+            for (int i = 0; i < players.Length; i++)
             {
-                raceRunner.SetDriver(Networking.GetOwner(this.gameObject));
+                if (!Utilities.IsValid(players[i])) { continue; }
+
+                var runner = (RaceRunner)players[i].FindComponentInPlayerObjects(_raceRunner);
+                if (!Utilities.IsValid(runner)) { continue; }
+
+                runner.SetDriver(driver);
             }
         }
     }

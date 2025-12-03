@@ -176,13 +176,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: participatingRunnerAsPlayer
+      Data: _runnerAsPlayer
     - Name: $v
       Entry: 7
       Data: 11|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: participatingRunnerAsPlayer
+      Data: _runnerAsPlayer
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 12|System.RuntimeType, mscorlib
@@ -230,13 +230,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: participatingRunnerAsDrone
+      Data: _runnerAsDrone
     - Name: $v
       Entry: 7
       Data: 14|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: participatingRunnerAsDrone
+      Data: _runnerAsDrone
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 15|System.RuntimeType, mscorlib

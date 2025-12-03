@@ -26,11 +26,5 @@ namespace MimyLab.RaceAssemblyToolkit
         }
 #endif
 
-        protected override void UpdateRecord()
-        {
-            if (_raceRecord) { _raceRecord.OnRunnerAsPlayerUpdate(this); }
-            //if (_courseRecord) { _courseRecord.OnRunnerAsPlayerUpdate(this); }
-            //if (_personalRecord) { _personalRecord.OnRunnerAsPlayerUpdate(this); }
-        }
     }
 }

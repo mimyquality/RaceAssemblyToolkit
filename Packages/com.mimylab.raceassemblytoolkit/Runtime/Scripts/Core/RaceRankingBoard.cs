@@ -43,11 +43,8 @@ namespace MimyLab.RaceAssemblyToolkit
             _plateParent = _plateTemplate.transform.parent;
             _plateTemplate.gameObject.SetActive(false);
 
-            _raceRecord = _course.RaceRecord;
+            _raceRecord = _course.raceRecord;
 
-            _participateRunners = _course.Runners;
-            _participateRunnerAsPlayer = _course.RunnerAsPlayer;
-            _participateRunnerAsDrone = _course.RunnerAsDrone;
 
             _initialized = true;
         }
