@@ -31,10 +31,6 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         private AudioClip _soundGoal;
 
-        protected RaceRecord _raceRecord;
-        protected CourseRecord _courseRecord;
-        protected PersonalRecord _personalRecord;
-
         private Stopwatch _stopwatch;
         private VRCPlayerApi _driver;
         private CourseDescriptor _entriedCourse;
@@ -61,7 +57,7 @@ namespace MimyLab.RaceAssemblyToolkit
         public TimeSpan LatestSplitTime { get => _latestSplitTime; }
         public TimeSpan GoalTime { get => _isGoal ? _latestSplitTime : TimeSpan.Zero; }
 
-        private Stopwatch _Stopwatch { get => _stopwatch ? _stopwatch : GetComponent<Stopwatch>(); }
+        private Stopwatch _Stopwatch { get => _stopwatch ? _stopwatch : (_stopwatch = GetComponent<Stopwatch>()); }
 
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         protected virtual void Reset()
@@ -142,7 +138,7 @@ namespace MimyLab.RaceAssemblyToolkit
                     {
                         CountStop(triggerClock);
 
-                        UpdateRecord();
+                        _entriedCourse.OnRunnerUpdate(this);
                         return;
                     }
                 }
@@ -155,14 +151,14 @@ namespace MimyLab.RaceAssemblyToolkit
                     {
                         CountStop(triggerClock);
 
-                        UpdateRecord();
+                        _entriedCourse.OnRunnerUpdate(this);
                         return;
                     }
                 }
 
                 _nextCheckpoint = GetNextCheckpoint(checkpoint);
 
-                UpdateRecord();
+                _entriedCourse.OnRunnerUpdate(this);
                 return;
             }
 
@@ -178,7 +174,7 @@ namespace MimyLab.RaceAssemblyToolkit
                 CourseEntry(course);
                 CountStart(triggerClock);
 
-                UpdateRecord();
+                _entriedCourse.OnRunnerUpdate(this);
                 return;
             }
         }
@@ -190,20 +186,9 @@ namespace MimyLab.RaceAssemblyToolkit
             if (_driver != driver)
             {
                 _driver = driver;
-                this.enabled = _driver == Networking.GetOwner(this.gameObject);
+                this.gameObject.SetActive(_driver == Networking.GetOwner(this.gameObject));
                 CountReset();
-
-                UpdateRecord();
             }
-        }
-
-        private void UpdateRecord()
-        {
-            if (!_driver.isLocal) { return; }
-
-            if (_raceRecord) { _raceRecord.OnRunnerUpdate(this); }
-            //if (_courseRecord) {_courseRecord.OnRunnerUpdate(this); }
-            //if (_personalRecord) { _personalRecord.OnRunnerUpdate(this); }
         }
 
         private void CourseEntry(CourseDescriptor course)
@@ -211,9 +196,6 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = course;
             _entriedNumberOfLaps = course.NumberOfLaps;
             _entriedCheckpoints = course.checkpoints;
-            _raceRecord = course.localRaceRecord;
-            _courseRecord = course.localCourseRecord;
-            _personalRecord = course.localPersonalRecord;
             _nextCheckpoint = GetNextCheckpoint(_entriedCheckpoints[0]);
 
             var sectionCount = _entriedNumberOfLaps > 0 ? _entriedNumberOfLaps * _entriedCheckpoints.Length : _entriedCheckpoints.Length - 1;
@@ -235,9 +217,6 @@ namespace MimyLab.RaceAssemblyToolkit
             _entriedCourse = null;
             _entriedNumberOfLaps = 0;
             _entriedCheckpoints = new Checkpoint[0];
-            _raceRecord = null;
-            _courseRecord = null;
-            _personalRecord = null;
             _nextCheckpoint = null;
 
             _Stopwatch.CountReset(0);

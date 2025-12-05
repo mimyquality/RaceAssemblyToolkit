@@ -29,7 +29,7 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField]
         internal RaceRunner[] raceRunners = new RaceRunner[0];
 
-        [Header("Records")]
+        [Header("Records Settings")]
         [SerializeField]
         internal RaceRecord raceRecord;
         [SerializeField]
@@ -131,6 +131,26 @@ namespace MimyLab.RaceAssemblyToolkit
             return _playersRunners[index];
         }
 
+        public bool IsParticipatingRunner(RaceRunner runner)
+        {
+            if (!runner) { return false; }
+
+            var owner = Networking.GetOwner(runner.gameObject);
+            var participatingRunners = GetParticipatingRunners(owner);
+
+            return System.Array.IndexOf(participatingRunners, runner) > -1;
+        }
+
+        internal void OnRunnerUpdate(RaceRunner runner)
+        {
+            var owner = Networking.GetOwner(runner.gameObject);
+            if (!owner.isLocal) { return; }
+
+            localRaceRecord.OnRunnerUpdate(runner);
+            //localCourseRecord.OnRunnerUpdate(this);
+            //localPersonalRecord.OnRunnerUpdate(this);
+        }
+
         private int ParticipateRunners(VRCPlayerApi player)
         {
             var result = System.Array.IndexOf(_players, null);
@@ -145,7 +165,7 @@ namespace MimyLab.RaceAssemblyToolkit
                 }
 
                 result = System.Array.IndexOf(_players, null);
-                // 全プレイヤー有効＝インスタンスに居る　なので上限拡張
+                // 全プレイヤー有効で空きがないので上限拡張
                 if (result < 0)
                 {
                     result = _players.Length;

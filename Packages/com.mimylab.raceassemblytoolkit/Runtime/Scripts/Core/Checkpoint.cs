@@ -19,7 +19,7 @@ namespace MimyLab.RaceAssemblyToolkit
         private ICheckpointReaction[] _reactions = new ICheckpointReaction[0];
 
         internal CourseDescriptor course;
-        
+
         private RaceRunnerAsPlayer _runnerAsPlayer;
         private RaceRunnerAsDrone _runnerAsDrone;
 
@@ -32,19 +32,14 @@ namespace MimyLab.RaceAssemblyToolkit
 
             var runner = other.GetComponent<RaceRunner>();
             if (!runner) { return; }
+            if (!course.IsParticipatingRunner(runner)) { return; }
 
-            var driver = runner.GetDriver();
-            if (!Utilities.IsValid(driver)) { return; }
-
-            var participatingRunners = course.GetParticipatingRunners(driver);
-            if (System.Array.IndexOf(participatingRunners, runner) < 0) { return; }
-
-            if (driver.isLocal)
+            if (Networking.IsOwner(runner.gameObject))
             {
                 runner.OnCheckpointPassed(this, triggerClock);
             }
 
-            React(driver);
+            React(runner.GetDriver());
         }
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)
@@ -54,12 +49,12 @@ namespace MimyLab.RaceAssemblyToolkit
             if (!_runnerAsPlayer) { return; }
             if (!Utilities.IsValid(player)) { return; }
 
-            var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_runnerAsPlayer);
-            if (!runnerAsPlayer) { return; }
+            var runner = (RaceRunner)player.FindComponentInPlayerObjects(_runnerAsPlayer);
+            if (!runner) { return; }
 
             if (player.isLocal)
             {
-                runnerAsPlayer.OnCheckpointPassed(this, triggerClock);
+                runner.OnCheckpointPassed(this, triggerClock);
             }
 
             React(player);
@@ -72,18 +67,18 @@ namespace MimyLab.RaceAssemblyToolkit
             if (!_runnerAsDrone) { return; }
             if (!Utilities.IsValid(drone)) { return; }
 
-            var driver = drone.GetPlayer();
-            if (!Utilities.IsValid(driver)) { return; }
+            var player = drone.GetPlayer();
+            if (!Utilities.IsValid(player)) { return; }
 
-            var runnerAsDrone = (RaceRunner)driver.FindComponentInPlayerObjects(_runnerAsDrone);
-            if (!runnerAsDrone) { return; }
+            var runner = (RaceRunner)player.FindComponentInPlayerObjects(_runnerAsDrone);
+            if (!runner) { return; }
 
-            if (driver.isLocal)
+            if (player.isLocal)
             {
-                runnerAsDrone.OnCheckpointPassed(this, triggerClock);
+                runner.OnCheckpointPassed(this, triggerClock);
             }
 
-            React(driver);
+            React(player);
         }
 
         internal void SetCourse(CourseDescriptor course)
