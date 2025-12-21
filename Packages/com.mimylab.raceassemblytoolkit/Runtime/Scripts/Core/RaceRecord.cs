@@ -76,11 +76,6 @@ namespace MimyLab.RaceAssemblyToolkit
         private void Start()
         {
             Initialize();
-
-            if (Networking.GetOwner(this.gameObject).isLocal)
-            {
-                course.localRaceRecord = this;
-            }
         }
 
         public override void OnPreSerialization()
@@ -132,15 +127,7 @@ namespace MimyLab.RaceAssemblyToolkit
         {
             Initialize();
 
-            if (_localParticipateRunners == null)
-            {
-                var localPlayer = Networking.LocalPlayer;
-                _localParticipateRunners = new RaceRunner[_runnersLength];
-                for (int i = 0; i < _localParticipateRunners.Length; i++)
-                {
-                    _localParticipateRunners[i] = (RaceRunner)localPlayer.FindComponentInPlayerObjects(_participateRunners[i]);
-                }
-            }
+            if (_localParticipateRunners == null) { _localParticipateRunners = course.GetParticipatingRunners(Networking.LocalPlayer); }
             var index = Array.IndexOf(_localParticipateRunners, runner);
             if (index < 0) { return; }
 

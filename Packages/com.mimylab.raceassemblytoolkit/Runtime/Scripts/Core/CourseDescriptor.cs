@@ -48,9 +48,13 @@ namespace MimyLab.RaceAssemblyToolkit
         [SerializeField, HideInInspector]
         internal RaceRunnerAsDrone runnerAsDrone;
 
-        internal RaceRecord localRaceRecord;
-        internal CourseRecord localCourseRecord;
-        internal PersonalRecord localPersonalRecord;
+        private VRCPlayerApi[] _players = new VRCPlayerApi[MaxPlayerCount];
+        private RaceRunner[][] _playersRunners = new RaceRunner[MaxPlayerCount][];
+        private RaceRunner[] _runnersEmpty = new RaceRunner[0];
+
+        private RaceRecord _localRaceRecord;
+        private CourseRecord _localCourseRecord;
+        private PersonalRecord _localPersonalRecord;
 
         public string CourseName { get => _courseName; }
         public int NumberOfLaps { get => _numberOfLaps; }
@@ -61,10 +65,6 @@ namespace MimyLab.RaceAssemblyToolkit
         public RaceRunnerAsPlayer RunnerAsPlayer { get => runnerAsPlayer; }
         public RaceRunnerAsDrone RunnerAsDrone { get => runnerAsDrone; }
          */
-
-        private VRCPlayerApi[] _players = new VRCPlayerApi[MaxPlayerCount];
-        private RaceRunner[][] _playersRunners = new RaceRunner[MaxPlayerCount][];
-        private RaceRunner[] _runnersEmpty = new RaceRunner[0];
 
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         private void OnValidate()
@@ -146,9 +146,10 @@ namespace MimyLab.RaceAssemblyToolkit
             var owner = Networking.GetOwner(runner.gameObject);
             if (!owner.isLocal) { return; }
 
-            localRaceRecord.OnRunnerUpdate(runner);
-            //localCourseRecord.OnRunnerUpdate(this);
-            //localPersonalRecord.OnRunnerUpdate(this);
+            if (!_localRaceRecord) { _localRaceRecord = (RaceRecord)owner.FindComponentInPlayerObjects(raceRecord); }
+            if (_localRaceRecord) { _localRaceRecord.OnRunnerUpdate(runner); }
+            //localCourseRecord.OnRunnerUpdate(runner);
+            //localPersonalRecord.OnRunnerUpdate(runner);
         }
 
         private int ParticipateRunners(VRCPlayerApi player)
