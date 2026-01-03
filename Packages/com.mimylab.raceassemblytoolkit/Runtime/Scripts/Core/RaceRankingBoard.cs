@@ -23,15 +23,12 @@ namespace MimyLab.RaceAssemblyToolkit
         private RaceRankingPlate _plateTemplate;
 
         private RaceRunner[] _participateRunners = new RaceRunner[0];
-        private RaceRunnerAsPlayer _participateRunnerAsPlayer;
-        private RaceRunnerAsDrone _participateRunnerAsDrone;
-
         private RaceRecord _raceRecord;
 
         private Transform _plateParent;
         private RaceRankingPlate[] _plates = new RaceRankingPlate[0];
         private RaceRunner[] _runners = new RaceRunner[0];
-        private TimeSpan[] _records = new TimeSpan[0];
+        private TimeSpan[] _recordTimes = new TimeSpan[0];
         private int[] _latestSections = new int[0];
         private int[] _ranking = new int[0];
 
@@ -43,8 +40,8 @@ namespace MimyLab.RaceAssemblyToolkit
             _plateParent = _plateTemplate.transform.parent;
             _plateTemplate.gameObject.SetActive(false);
 
+            _participateRunners = _course.raceRunners;
             _raceRecord = _course.raceRecord;
-
 
             _initialized = true;
         }
@@ -65,21 +62,12 @@ namespace MimyLab.RaceAssemblyToolkit
             InsertSortByRecord();
         }
 
-        public override void OnPlayerRestored(VRCPlayerApi player)
-        {
-            Initialize();
-
-            SetupFromPlayerRunner(player);
-
-            RefreshPlatesAll();
-            InsertSortByRecord();
-        }
-
         internal override void OnRaceRecordUpdate(RaceRecord record)
         {
             Initialize();
 
             // record を元にプレート更新
+            RefreshPlatesAll();
 
             InsertSortByRecord();
         }
@@ -87,24 +75,6 @@ namespace MimyLab.RaceAssemblyToolkit
         private void SetupFromPlayerRunner(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) { return; }
-
-            if (_participateRunnerAsPlayer)
-            {
-                var runnerAsPlayer = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsPlayer);
-                if (runnerAsPlayer)
-                {
-                    AddRunner(runnerAsPlayer);
-                }
-            }
-
-            if (_participateRunnerAsDrone)
-            {
-                var runnerAsDrone = (RaceRunner)player.FindComponentInPlayerObjects(_participateRunnerAsDrone);
-                if (runnerAsDrone)
-                {
-                    AddRunner(runnerAsDrone);
-                }
-            }
 
             var raceRecord = (RaceRecord)player.FindComponentInPlayerObjects(_raceRecord);
             if (raceRecord)
@@ -136,7 +106,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             Array.Copy(_plates, tmpPlates, platesCount);
             Array.Copy(_runners, tmpRunners, platesCount);
-            Array.Copy(_records, tmpRecords, platesCount);
+            Array.Copy(_recordTimes, tmpRecords, platesCount);
             Array.Copy(_latestSections, tmpLatestSections, platesCount);
             Array.Copy(_ranking, tmpRanking, platesCount);
             for (int i = platesCount; i < platesEnd; i++)
@@ -150,7 +120,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _plates = tmpPlates;
             _runners = tmpRunners;
-            _records = tmpRecords;
+            _recordTimes = tmpRecords;
             _latestSections = tmpLatestSections;
             _ranking = tmpRanking;
         }
@@ -183,7 +153,7 @@ namespace MimyLab.RaceAssemblyToolkit
 
             _plates = new RaceRankingPlate[0];
             _runners = new RaceRunner[0];
-            _records = new TimeSpan[0];
+            _recordTimes = new TimeSpan[0];
             _latestSections = new int[0];
             _ranking = new int[0];
 
@@ -213,7 +183,7 @@ namespace MimyLab.RaceAssemblyToolkit
                     if (_latestSections[tmpIndex[j - 1]] < _latestSections[i]) { continue; }
 
                     if (_latestSections[tmpIndex[j - 1]] == _latestSections[i] &&
-                       _records[tmpIndex[j - 1]] > _records[i])
+                       _recordTimes[tmpIndex[j - 1]] > _recordTimes[i])
                     {
                         continue;
                     }
@@ -232,14 +202,14 @@ namespace MimyLab.RaceAssemblyToolkit
             {
                 tmpPlates[i] = _plates[tmpIndex[i]];
                 tmpRunners[i] = _runners[tmpIndex[i]];
-                tmpRecords[i] = _records[tmpIndex[i]];
+                tmpRecords[i] = _recordTimes[tmpIndex[i]];
                 tmpLatestSections[i] = _latestSections[tmpIndex[i]];
                 _ranking[i] = (i > 0 && tmpRecords[i - 1] == tmpRecords[i]) ? _ranking[i - 1] : i + 1;
 
             }
             tmpPlates.CopyTo(_plates, 0);
             tmpRunners.CopyTo(_runners, 0);
-            tmpRecords.CopyTo(_records, 0);
+            tmpRecords.CopyTo(_recordTimes, 0);
             tmpLatestSections.CopyTo(_latestSections, 0);
         }
     }

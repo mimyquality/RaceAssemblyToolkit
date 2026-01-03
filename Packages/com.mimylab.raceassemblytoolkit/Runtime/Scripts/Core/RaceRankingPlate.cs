@@ -110,7 +110,6 @@ namespace MimyLab.RaceAssemblyToolkit
                 SetLapText();
             }
         }
-
         private void SetLapText()
         {
             if (_lapText)
